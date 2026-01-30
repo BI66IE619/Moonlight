@@ -1,4 +1,3 @@
-// Function to get the currently selected server from the UI or default
 const getBare = () => {
     return localStorage.getItem('moonlight_bare') || 'https://bare.benroberts.dev/';
 };
