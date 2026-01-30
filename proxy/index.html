@@ -7,10 +7,23 @@
     <script src="uv/uv.config.js"></script>
 </head>
 <body>
-    <div class="launcher">
-        <h1>MOONLIGHT</h1>
-        <input type="text" id="url" placeholder="Search or type a URL...">
-        <button onclick="launch()">Launch Tunnel</button>
+    <div class="launcher-card">
+        <div class="glitch-text">MOONLIGHT GATEWAY</div>
+        
+        <div class="input-group">
+            <input type="text" id="url-input" placeholder="Search or enter URL..." autofocus>
+            <button onclick="launchProxy()">LAUNCH</button>
+        </div>
+
+        <div class="selector-container">
+            <label>ENGINE NODE:</label>
+            <select id="server-select" onchange="updateServer()">
+                <option value="https://bare.benroberts.dev/">Node Alpha (Fast)</option>
+                <option value="https://bare.radon.games/">Node Beta (Stable)</option>
+                <option value="https://uv.student-hub.xyz/bare/">Node Gamma (Stealth)</option>
+                <option value="https://toddler-dance.com/bare/">Node Delta (New)</option>
+            </select>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
