@@ -1,18 +1,23 @@
-// Register the Service Worker (The "Unblocker")
+// Register Service Worker
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./uv/uv.sw.js', {
-            scope: __uv$config.prefix
-        });
+    navigator.serviceWorker.register('./uv/uv.sw.js', {
+        scope: __uv$config.prefix
     });
 }
 
-function launch() {
-    let url = document.getElementById('url').value.trim();
+function updateServer() {
+    const select = document.getElementById('server-select');
+    localStorage.setItem('moonlight_bare', select.value);
+    // Reload to apply the new Bare server to the config
+    location.reload();
+}
+
+function launchProxy() {
+    let url = document.getElementById('url-input').value.trim();
+    if (!url) return;
     if (!url.includes('.')) url = 'https://www.google.com/search?q=' + url;
     else if (!(url.startsWith('https://') || url.startsWith('http://'))) url = 'https://' + url;
 
-    // Open in about:blank for total stealth
     const win = window.open('about:blank', '_blank');
     const iframe = win.document.createElement('iframe');
     iframe.style.width = '100%';
