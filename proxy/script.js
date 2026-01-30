@@ -1,28 +1,32 @@
 function launchProxy() {
-    let url = document.getElementById('url-input').value.trim();
-    if (!url) return;
+    let input = document.getElementById('url-input').value.trim();
+    if (!input) return;
 
-    // Search Engine Routing
+    // 1. Prepare the URL
+    let url = input;
     if (!url.includes(".")) {
         url = "https://www.google.com/search?q=" + encodeURIComponent(url);
     } else if (!(url.startsWith("https://") || url.startsWith("http://"))) {
         url = "https://" + url;
     }
 
-    // Use a high-performance 2026 Mirror (Interstellar Engine)
-    // If this mirror gets blocked, just update this one variable
+    // 2. The Mirror Engine (Ultraviolet-powered)
+    // We use a Base64 encoded URL format which most proxies use
     const proxyEngine = "https://artclass.site/uv/service/" + btoa(url);
 
-    const win = window.open();
+    // 3. Create the 'about:blank' tab FIRST (must be immediate)
+    const win = window.open('about:blank', '_blank');
     if (!win) {
-        alert("Please allow pop-ups for Moonlight to function.");
+        alert("Pop-up blocked! Click the icon in your address bar to 'Always Allow' for Moonlight.");
         return;
     }
 
+    // 4. Inject the content into the new tab
+    win.document.title = "Google Classroom"; // Stealth title
     win.document.body.style.margin = '0';
     win.document.body.style.height = '100vh';
+    win.document.body.style.overflow = 'hidden';
     
-    // The actual Cloak
     const iframe = win.document.createElement('iframe');
     iframe.style.border = 'none';
     iframe.style.width = '100%';
@@ -31,12 +35,14 @@ function launchProxy() {
     iframe.src = proxyEngine;
 
     win.document.body.appendChild(iframe);
-    
-    // Optional: Redirect original tab to Google to 'hide' evidence
-    window.location.replace("https://google.com");
+
+    // 5. SUCCESS: Clear your input
+    document.getElementById('url-input').value = "";
 }
 
-// Handle 'Enter' key
+// Ensure Enter key works without triggering popup blockers
 document.getElementById('url-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') launchProxy();
+    if (e.key === 'Enter') {
+        launchProxy();
+    }
 });
