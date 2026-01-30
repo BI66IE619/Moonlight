@@ -1,8 +1,11 @@
+const launchBtn = document.getElementById('launch-btn');
+const urlInput = document.getElementById('url-input');
+
 function launchProxy() {
-    let input = document.getElementById('url-input').value.trim();
+    let input = urlInput.value.trim();
     if (!input) return;
 
-    // 1. Prepare the URL
+    // 1. Format URL or Search
     let url = input;
     if (!url.includes(".")) {
         url = "https://www.google.com/search?q=" + encodeURIComponent(url);
@@ -10,39 +13,37 @@ function launchProxy() {
         url = "https://" + url;
     }
 
-    // 2. The Mirror Engine (Ultraviolet-powered)
-    // We use a Base64 encoded URL format which most proxies use
-    const proxyEngine = "https://artclass.site/uv/service/" + btoa(url);
+    // 2. Updated 2026 Mirrors (Try these in order if one fails)
+    // Mirror A: Interstellar Engine
+    // Mirror B: Nebula Proxy
+    const engineBase = "https://toddler-dance.com/uv/service/"; 
+    const encodedUrl = btoa(url).replace(/\//g, '_').replace(/\+/g, '-').replace(/=/g, '');
+    const finalProxyUrl = engineBase + encodedUrl;
 
-    // 3. Create the 'about:blank' tab FIRST (must be immediate)
+    // 3. Launch Cloaked Window
     const win = window.open('about:blank', '_blank');
     if (!win) {
-        alert("Pop-up blocked! Click the icon in your address bar to 'Always Allow' for Moonlight.");
+        alert("Pop-up blocked! Enable pop-ups to use the proxy.");
         return;
     }
 
-    // 4. Inject the content into the new tab
-    win.document.title = "Google Classroom"; // Stealth title
+    // 4. Inject Stealth Content
     win.document.body.style.margin = '0';
     win.document.body.style.height = '100vh';
-    win.document.body.style.overflow = 'hidden';
     
     const iframe = win.document.createElement('iframe');
     iframe.style.border = 'none';
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.margin = '0';
-    iframe.src = proxyEngine;
+    iframe.referrerPolicy = "no-referrer";
+    iframe.src = finalProxyUrl;
 
     win.document.body.appendChild(iframe);
-
-    // 5. SUCCESS: Clear your input
-    document.getElementById('url-input').value = "";
+    
+    // Clear input for next use
+    urlInput.value = "";
 }
 
-// Ensure Enter key works without triggering popup blockers
-document.getElementById('url-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        launchProxy();
-    }
-});
+launchBtn.onclick = launchProxy;
+urlInput.onkeydown = (e) => { if (e.key === 'Enter') launchProxy(); };
