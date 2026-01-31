@@ -3,132 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight | Premiere Hub</title>
+    <title>Moonlight | Unblocked</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;600&display=swap');
 
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            overflow: hidden; 
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        canvas { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            z-index: -1; 
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
 
         .container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            text-align: center;
         }
 
-        h1 { 
-            letter-spacing: 15px; 
-            font-weight: 100; 
-            text-align: center; 
-            margin-bottom: 60px; 
-            font-size: 2.5rem;
+        header {
+            margin-bottom: 80px;
         }
 
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 220px); /* Only two columns now */
-            gap: 30px; 
-        }
-
-        .module { 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            padding: 50px 0;
-            text-align: center; 
-            cursor: pointer; 
-            transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
-            text-decoration: none; 
-            color: rgba(255, 255, 255, 0.6); 
-            position: relative; 
-            background: rgba(255, 255, 255, 0.02);
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-size: 0.8rem;
-        }
-
-        .module:hover { 
-            border-color: #fff; 
-            background: rgba(255, 255, 255, 0.05); 
-            transform: translateY(-8px); 
+        .glitch {
+            font-size: 3.5rem;
+            font-weight: 100;
+            letter-spacing: 20px;
+            margin: 0;
             color: #fff;
+            text-transform: uppercase;
         }
 
-        /* Moonlight Corner Accents */
-        .module::before { 
-            content: ''; position: absolute; top: 0; left: 0; width: 12px; height: 12px; 
-            border-top: 1px solid #fff; border-left: 1px solid #fff; opacity: 0; transition: 0.3s;
+        .subtitle {
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
-        .module::after { 
-            content: ''; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; 
-            border-bottom: 1px solid #fff; border-right: 1px solid #fff; opacity: 0; transition: 0.3s;
+
+        /* Updated Grid for 5 Modules */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .module {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 50px 20px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        /* The Corner Accents */
+        .module::before, .module::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            transition: all 0.4s ease;
+            z-index: 2;
+        }
+
+        .module::before {
+            top: 0;
+            left: 0;
+            border-top: 2px solid rgba(255, 255, 255, 0.5);
+            border-left: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .module::after {
+            bottom: 0;
+            right: 0;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            border-right: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .module:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
+            transform: scale(1.02);
         }
 
         .module:hover::before, .module:hover::after {
-            opacity: 1;
+            width: 100%;
+            height: 100%;
+            border-color: #fff;
+        }
+
+        .module .icon {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            filter: grayscale(100%) brightness(1.5);
+            transition: transform 0.3s ease;
+        }
+
+        .module:hover .icon {
+            transform: translateY(-5px);
+            filter: grayscale(0%) brightness(1);
+        }
+
+        .module span {
+            display: block;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.3s ease;
+        }
+
+        .module:hover span {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+        }
+
+        /* Scanline Animation */
+        .scanline {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(rgba(255,255,255,0.05) 0%, transparent 10%, transparent 100%);
+            pointer-events: none;
+            display: none;
+            z-index: 1;
+        }
+
+        .module:hover .scanline {
+            display: block;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            from { transform: translateY(0); }
+            to { transform: translateY(33%); }
         }
     </style>
 </head>
 <body>
-    <canvas id="stars"></canvas>
-    
+    <canvas id="starfield"></canvas>
+
     <div class="container">
-        <h1>MOONLIGHT</h1>
-        <div class="grid">
-            <a href="/games" class="module"><span>GAMES</span></a>
-            <a href="/apps" class="module"><span>APPS</span></a>
-        </div>
+        <header>
+            <h1 class="glitch">MOONLIGHT</h1>
+            <p class="subtitle">Premiere unblocked hub for entertainment and productivity.</p>
+        </header>
+
+        <nav class="grid">
+            <div class="module" onclick="location.href='/games.html'">
+                <div class="scanline"></div>
+                <div class="icon">🎮</div>
+                <span>Games</span>
+            </div>
+            <div class="module" onclick="location.href='/apps.html'">
+                <div class="scanline"></div>
+                <div class="icon">🛠️</div>
+                <span>Apps</span>
+            </div>
+            <div class="module" onclick="location.href='/movies.html'">
+                <div class="scanline"></div>
+                <div class="icon">🎬</div>
+                <span>Movies</span>
+            </div>
+            <div class="module" onclick="location.href='/hub.html'">
+                <div class="scanline"></div>
+                <div class="icon">📖</div>
+                <span>Academic Hub</span>
+            </div>
+            <div class="module" onclick="location.href='/chat.html'">
+                <div class="scanline"></div>
+                <div class="icon">🔊</div>
+                <span>Voice Chat</span>
+            </div>
+        </nav>
     </div>
 
     <script>
-        const canvas = document.getElementById('stars');
+        const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
-        let s = [];
+
+        let stars = [];
+        const numStars = 400;
 
         function init() {
-            canvas.width = window.innerWidth; 
+            canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            s = Array(150).fill().map(() => ({ 
-                x: Math.random() * canvas.width, 
-                y: Math.random() * canvas.height, 
-                v: Math.random() * 0.4 + 0.1,
-                size: Math.random() * 1.5 
-            }));
+            stars = [];
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * 0.3 + 0.1
+                });
+            }
         }
 
-        function draw() {
-            ctx.fillStyle = '#000'; 
+        function animate() {
+            ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#fff'; 
-            s.forEach(p => { 
-                ctx.beginPath(); 
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); 
-                ctx.fill(); 
-                p.y += p.v; 
-                if(p.y > canvas.height) p.y = 0; 
+            
+            ctx.fillStyle = '#fff';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                star.y += star.speed;
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
             });
-            requestAnimationFrame(draw);
+            
+            requestAnimationFrame(animate);
         }
 
-        window.onresize = init; 
-        init(); 
-        draw();
+        window.addEventListener('resize', init);
+        init();
+        animate();
     </script>
 </body>
 </html>
