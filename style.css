@@ -1,14 +1,14 @@
-/* Create a 6-column base to allow for half-column offsets */
+/* Create a 6-column base */
 .grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr); 
     gap: 30px;
     padding: 20px;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
-/* Default state: each module takes up 2 of the 6 columns */
+/* Base module style: spans 2 columns by default */
 .module {
     grid-column: span 2;
     position: relative;
@@ -24,15 +24,15 @@
     justify-content: center;
 }
 
-/* THE MAGIC: Center the bottom two buttons */
-/* Targeting the 4th item (Academic Hub) */
+/* THE CENTERING LOGIC */
+/* 4th Item (Academic Hub): Starts at column 2 and spans 2 slots */
 .module:nth-child(4) {
-    grid-column: 2 / span 2; /* Starts at column 2, moves it inward */
+    grid-column: 2 / span 2;
 }
 
-/* Targeting the 5th item (Voice Chat) */
+/* 5th Item (Voice Chat): Starts at column 4 and spans 2 slots */
 .module:nth-child(5) {
-    grid-column: 4 / span 2; /* Sits next to the 4th item */
+    grid-column: 4 / span 2;
 }
 
-/* Keep the rest of your hover effects (brackets, icons, etc.) below this */
+/* Maintain your existing hover, icon, and scanline effects below... */
