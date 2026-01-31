@@ -1,112 +1,38 @@
-/* Update the grid spacing for a cleaner look */
+/* Create a 6-column base to allow for half-column offsets */
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(6, 1fr); 
     gap: 30px;
     padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
+/* Default state: each module takes up 2 of the 6 columns */
 .module {
+    grid-column: span 2;
     position: relative;
-    background: rgba(255, 255, 255, 0.02); /* Very faint fill */
-    border: 1px solid rgba(255, 255, 255, 0.15); /* Dim border */
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 50px 20px;
     cursor: pointer;
     overflow: hidden;
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-/* The Corner Accents (The 'Professional' Detail) */
-.module::before, .module::after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    transition: all 0.4s ease;
+/* THE MAGIC: Center the bottom two buttons */
+/* Targeting the 4th item (Academic Hub) */
+.module:nth-child(4) {
+    grid-column: 2 / span 2; /* Starts at column 2, moves it inward */
 }
 
-/* Top Left Bracket */
-.module::before {
-    top: 0;
-    left: 0;
-    border-top: 2px solid rgba(255, 255, 255, 0.5);
-    border-left: 2px solid rgba(255, 255, 255, 0.5);
+/* Targeting the 5th item (Voice Chat) */
+.module:nth-child(5) {
+    grid-column: 4 / span 2; /* Sits next to the 4th item */
 }
 
-/* Bottom Right Bracket */
-.module::after {
-    bottom: 0;
-    right: 0;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.5);
-    border-right: 2px solid rgba(255, 255, 255, 0.5);
-}
-
-/* Hover State: The Inversion & Pulse */
-.module:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.1), inset 0 0 10px rgba(255, 255, 255, 0.05);
-    transform: scale(1.02);
-}
-
-/* Brackets expand on hover */
-.module:hover::before, .module:hover::after {
-    width: 100%;
-    height: 100%;
-    border-color: #fff;
-}
-
-/* Shimmer Light Sweep Effect */
-.module:hover::mousedown {
-    background: #fff;
-}
-
-.module .icon {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
-    filter: grayscale(100%) brightness(1.5); /* Keeps icons monochromatic */
-    transition: transform 0.3s ease;
-}
-
-.module:hover .icon {
-    transform: translateY(-5px);
-    filter: grayscale(0%) brightness(1); /* Color pops back on hover */
-}
-
-.module span {
-    display: block;
-    font-weight: 400;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
-    transition: color 0.3s ease;
-}
-
-.module:hover span {
-    color: #fff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-}
-
-/* Adding a subtle scanning line to the background of the buttons */
-.module::after {
-    content: "";
-    position: absolute;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background: linear-gradient(rgba(255,255,255,0.05) 0%, transparent 10%, transparent 100%);
-    pointer-events: none;
-    animation: scan 8s linear infinite;
-    display: none; /* Only show on hover if you like */
-}
-
-.module:hover::after {
-    display: block;
-}
-
-@keyframes scan {
-    from { transform: translateY(0); }
-    to { transform: translateY(100%); }
-}
+/* Keep the rest of your hover effects (brackets, icons, etc.) below this */
