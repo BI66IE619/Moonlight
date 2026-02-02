@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moonlight | Games</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="games.css">
+</head>
+<body class="games-page">
+    <canvas id="starfield"></canvas>
+
+    <nav class="top-nav">
+        <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+        <div class="nav-links">
+            <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+            <span class="nav-status">LIBRARY: 300+ ENTRIES</span>
+        </div>
+    </nav>
+
+    <div class="games-wrapper">
+        <div class="games-scroll-area">
+            <div class="rectangle-container">
+                <div class="rectangle" data-category="mobile" onclick="window.location.href='/subwaysurfers.html'">
+                    <img src="/g/assets/subway-surfers.webp" alt="subway surfers series">
+                    <div class="game-name">subway surfers series</div>
+                </div>
+            </div>
+
+            <div class="rectangle-container">
+                <div class="rectangle" data-category="mobile" onclick="window.location.href='/g/minecraft.html'">
+                    <img src="https://gaming-cdn.com/images/news/articles/7191/cover/minecraft-gets-a-new-artwork-cover66856ea7d02ad.jpg" alt="Minecraft Launcher">
+                    <div class="game-name">minecraft launcher</div>
+                </div>
+            </div>
+
+            <div class="rectangle-container">
+                <div class="rectangle" data-category="mobile" onclick="window.location.href='/g/block-blast.html'">
+                    <img src="/g/assets/block-blast.webp" alt="Block Blast">
+                    <div class="game-name">block blast</div>
+                </div>
+            </div>
+
+            </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
