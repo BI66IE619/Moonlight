@@ -83,17 +83,19 @@ body, html {
     padding: 40px;
 }
 
+/* --- THE GRID (Perfectly Balanced) --- */
 .grid {
     display: grid; 
     grid-template-columns: repeat(3, 1fr);
-    /* Increased row height to give cards more vertical presence */
-    grid-template-rows: repeat(2, 220px); 
-    gap: 30px; /* Wider gap for a more premium spread */
+    /* Reduced from 220px to 180px for a sleeker profile */
+    grid-template-rows: repeat(2, 180px); 
+    gap: 20px; /* Tighter gap to match the title's clean lines */
     width: 100%;
-    max-width: 1300px; /* Slightly wider container */
-    margin-top: 20px;
+    max-width: 1150px; /* Slightly narrower to focus the eye */
+    margin-top: 10px;
 }
 
+/* --- THE CARDS (Sleek & Intentional) --- */
 .card {
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.02);
@@ -101,33 +103,25 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px; /* Increased vertical padding */
+    /* Optimized padding to balance internal space */
+    padding: 25px 15px; 
     text-align: center;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    /* Subtle backdrop blur makes the stars look "behind" frosted glass */
-    backdrop-filter: blur(2px); 
+    backdrop-filter: blur(2px);
 }
 
 .card h3 {
     font-family: 'Syncopate';
-    font-size: 1.1rem; 
-    letter-spacing: 4px;
-    margin-bottom: 12px;
+    font-size: 0.95rem; /* Slightly smaller to feel more "UI-like" */
+    letter-spacing: 3px;
+    margin-bottom: 8px;
 }
 
 .card p {
-    font-size: 0.8rem;
+    font-size: 0.75rem; /* Crisp and secondary */
     opacity: 0.5;
     font-weight: 300;
-    max-width: 80%; /* Keeps text centered and readable */
-}
-
-/* --- Interaction --- */
-.card:hover {
-    background: var(--white);
-    color: var(--black);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    max-width: 85%;
 }
