@@ -45,6 +45,18 @@ body, html {
     opacity: 0.8;
 }
 
+.nav-links span {
+    font-family: 'Syncopate';
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    transition: opacity 0.3s ease;
+}
+
+.nav-links span:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px #ffffff;
+}
+
 /* --- Hero Section (Title) --- */
 .hero {
     text-align: center;
