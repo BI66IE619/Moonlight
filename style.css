@@ -1,92 +1,54 @@
-/* --- Core Layout Lock --- */
+/* Ensure the starfield stays in the background but doesn't swallow clicks */
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Keep it behind everything */
+    pointer-events: none;
+}
+
+/* Fix the layout collapse */
 body, html {
     margin: 0;
     padding: 0;
-    background-color: var(--black);
-    color: var(--white);
+    background-color: #050505;
+    color: #ffffff;
     font-family: 'Space Grotesk', sans-serif;
-    /* This is the magic part: */
     height: 100vh;
     width: 100vw;
-    overflow: hidden; 
+    overflow: hidden; /* Strict no-scroll */
     display: flex;
     flex-direction: column;
 }
 
+/* This container ensures the grid and hero actually appear */
 .main-page {
+    position: relative;
+    z-index: 1; 
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Spaced out top to bottom */
 }
 
-/* --- Adjusted Navigation --- */
-.top-nav {
-    flex: 0 0 auto; /* Don't shrink or grow */
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    padding: 20px 50px; 
-    z-index: 10;
-}
-
-/* --- Compact Hero Section --- */
-.hero { 
-    flex: 0 0 auto;
-    text-align: center; 
-    padding: 20px 20px; 
-    z-index: 1;
-}
-.hero-title { 
-    font-family: 'Syncopate'; 
-    font-size: clamp(1.5rem, 5vw, 3.5rem); /* Scaled down slightly */
-    letter-spacing: 15px; 
-    margin-bottom: 10px;
-}
-.hero-line { width: 40px; height: 1px; background: var(--white); margin: 0 auto 15px; }
-.hero-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.7; }
-
-/* --- Scalable Grid --- */
+/* Add a min-height to the grid to prevent it from vanishing */
 .container { 
-    flex: 1; /* Take up all remaining vertical space */
+    flex: 1;
     width: 100%;
     max-width: 1400px; 
     margin: 0 auto; 
-    padding: 20px 40px 40px; 
+    padding: 20px 40px; 
     display: flex;
-    align-items: center; /* Center the grid vertically in the remaining space */
+    align-items: center;
+    min-height: 0; /* Important for Chrome flexbox bug */
 }
 
 .grid { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
-    grid-template-rows: repeat(2, 1fr);    /* Force 2 rows */
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 20px; 
     width: 100%;
-    height: 100%; /* Fill the container */
-}
-
-/* --- Compact Cards --- */
-.card {
-    position: relative; 
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-    text-align: center;
-}
-
-.card h3 { 
-    font-family: 'Syncopate'; 
-    font-size: 1rem; 
-    margin-bottom: 8px; 
-    letter-spacing: 2px; 
-}
-
-.card p { 
-    font-size: 0.75rem; 
-    max-width: 80%;
+    height: 90%; /* Give it some breathing room */
 }
