@@ -96,46 +96,66 @@ body, html {
 }
 
 /* --- THE GRID (Sized for Impact) --- */
+/* --- THE GRID (Expanded) --- */
 .grid {
     display: grid; 
     grid-template-columns: repeat(3, 1fr);
-    /* Bumping row height from 180px to 205px for more presence */
-    grid-template-rows: repeat(2, 205px); 
-    gap: 25px; 
+    /* Bumped height from 180px to 220px for more "presence" */
+    grid-template-rows: repeat(2, 220px); 
+    gap: 30px; /* Increased gap to match the larger card size */
     width: 100%;
-    max-width: 1250px; /* Slightly wider to accommodate bigger boxes */
-    margin-top: 15px;
+    max-width: 1300px; /* Widened the grid spread */
+    height: auto;
+    margin-top: 10px;
 }
 
-/* --- THE CARDS (Refined) --- */
+/* --- THE CARDS (Polished & Sized) --- */
 .card {
-    border: 1px solid var(--border);
+    border: 1px solid var(--white); /* Crisp white border */
     background: rgba(255, 255, 255, 0.02);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 35px 20px; /* Increased internal vertical space */
+    padding: 20px;
     text-align: center;
     cursor: pointer;
+    
+    /* Ensure border and hover effect stay perfectly aligned */
+    box-sizing: border-box; 
+    height: 100%;
+    width: 100%;
+    
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     backdrop-filter: blur(2px);
 }
 
+/* --- THE HOVER (The "White Box" Logic) --- */
+.card:hover {
+    background-color: #ffffff !important;
+    transform: translateY(-8px); /* Slightly more pronounced lift */
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+}
+
+/* Forces text to black on hover so it remains legible */
+.card:hover h3, 
+.card:hover p {
+    color: #000000 !important;
+    opacity: 1;
+}
+
 .card h3 {
     font-family: 'Syncopate';
-    font-size: 1.05rem; /* Slightly larger text for the bigger box */
+    font-size: 1.1rem; /* Slightly larger title */
     letter-spacing: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .card p {
     font-size: 0.8rem;
     opacity: 0.5;
-    font-weight: 300;
-    max-width: 85%;
-    line-height: 1.4;
+    max-width: 80%;
 }
 
 .card-link {
