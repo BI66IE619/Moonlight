@@ -126,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('resize', init);
 
 /**
- * TAB CLOAK ENGINE
- * Mimics a productivity tool to bypass visual inspection.
+ * TAB CLOAK ENGINE v2
+ * Handles dynamic swapping between Google Drive and local Moonlight assets.
  */
 
 const cloakSettings = {
@@ -136,41 +136,37 @@ const cloakSettings = {
 };
 
 const originalSettings = {
-    title: document.title,
-    icon: '' // Will be grabbed on load
+    title: 'Moonlight | Hub',
+    icon: 'favicon.ico' // Points directly to your local file
 };
 
 let isCloaked = false;
 
 function toggleCloak() {
-    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    
-    if (!isCloaked) {
-        // Save original if not already saved
-        if (!originalSettings.icon) {
-            const currentIcon = document.querySelector("link[rel*='icon']");
-            originalSettings.icon = currentIcon ? currentIcon.href : '';
-        }
-
-        // Apply Cloak
-        document.title = cloakSettings.title;
-        link.type = 'image/x-icon';
+    // Locate the favicon link tag or create one if it doesn't exist
+    let link = document.querySelector("link[rel*='icon']");
+    if (!link) {
+        link = document.createElement('link');
         link.rel = 'shortcut icon';
-        link.href = cloakSettings.icon;
         document.getElementsByTagName('head')[0].appendChild(link);
-        
-        console.log("Moonlight: Ghost Mode Active.");
+    }
+
+    if (!isCloaked) {
+        // --- GO GHOST ---
+        document.title = cloakSettings.title;
+        link.href = cloakSettings.icon;
+        console.log("Moonlight: Cloak engaged.");
     } else {
-        // Restore Moonlight
+        // --- RETURN TO BASE ---
         document.title = originalSettings.title;
         link.href = originalSettings.icon;
-        console.log("Moonlight: Interface Restored.");
+        console.log("Moonlight: Identity restored.");
     }
     
     isCloaked = !isCloaked;
 }
 
-// Listen for the 'Escape' key to toggle cloak
+// Listen for the 'Escape' key
 window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         toggleCloak();
