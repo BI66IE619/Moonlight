@@ -1,87 +1,111 @@
-/* --- GAMES LIBRARY LAYOUT --- */
-.games-wrapper {
-    flex: 1;
-    overflow: hidden;
-    padding: 20px 40px 40px;
+/* --- UI WRAPPER OVERRIDE --- */
+.ui-wrapper {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.games-scroll-area {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+/* --- SEARCH BAR --- */
+.search-container {
+    padding: 20px 60px;
     width: 100%;
-    max-width: 1400px;
-    overflow-y: auto;
-    padding-right: 10px;
-    /* Custom Scrollbar for Chrome/Safari */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.games-scroll-area::-webkit-scrollbar {
-    width: 4px;
+#gameSearch {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: 'Syncopate';
+    font-size: 1.2rem;
+    letter-spacing: 5px;
+    padding: 10px 0;
 }
-.games-scroll-area::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+
+.search-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    transition: background 0.3s ease;
 }
-.games-scroll-area::-webkit-scrollbar-thumb {
+
+#gameSearch:focus + .search-line {
+    background: #fff;
+}
+
+/* --- SCROLLABLE GRID --- */
+.games-container {
+    flex: 1;
+    overflow-y: auto; /* This enables the scrolling */
+    padding: 20px 60px 100px;
+    scrollbar-width: thin;
+    scrollbar-color: #fff rgba(255,255,255,0.05);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Webkit Scrollbar Styling (Chrome/Edge) */
+.games-container::-webkit-scrollbar {
+    width: 5px;
+}
+.games-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+.games-container::-webkit-scrollbar-thumb {
     background: #ffffff;
 }
 
-/* --- YOUR RECTANGLE STRUCTURE --- */
-.rectangle-container {
-    width: 100%;
-    aspect-ratio: 16 / 9; /* Keeps them uniform */
-}
-
+/* --- RECTANGLE STYLING --- */
 .rectangle {
     position: relative;
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    aspect-ratio: 16 / 9;
     cursor: pointer;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 .rectangle img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.7;
-    filter: grayscale(100%); /* Keeps the monochromatic theme */
-    transition: all 0.3s ease;
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: 0.4s;
 }
 
 .game-name {
     position: absolute;
     bottom: 0;
-    left: 0;
     width: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    font-family: 'Space Grotesk';
-    font-size: 0.7rem;
-    padding: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    background: rgba(0,0,0,0.85);
+    font-size: 0.75rem;
+    font-family: 'Syncopate';
+    letter-spacing: 2px;
 }
 
-/* --- THE HOVER EFFECT --- */
 .rectangle:hover {
     border-color: #fff;
-    transform: scale(1.02);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
 }
 
 .rectangle:hover img {
+    filter: grayscale(0%);
     opacity: 1;
-    filter: grayscale(0%); /* Color pops in on hover */
 }
 
 .rectangle:hover .game-name {
-    background: #ffffff;
-    color: #000000;
+    background: #fff;
+    color: #000;
 }
