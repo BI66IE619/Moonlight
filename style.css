@@ -95,67 +95,63 @@ body, html {
     padding: 40px;
 }
 
-/* --- THE GRID (Sized for Impact) --- */
-/* --- THE GRID (Expanded) --- */
+/* --- THE GRID (Sleek & Balanced) --- */
 .grid {
     display: grid; 
     grid-template-columns: repeat(3, 1fr);
-    /* Bumped height from 180px to 220px for more "presence" */
-    grid-template-rows: repeat(2, 220px); 
-    gap: 30px; /* Increased gap to match the larger card size */
+    /* Dropped from 220px to 190px for a more professional profile */
+    grid-template-rows: repeat(2, 190px); 
+    gap: 20px; /* Tighter gap for a more unified look */
     width: 100%;
-    max-width: 1300px; /* Widened the grid spread */
-    height: auto;
+    max-width: 1100px; /* Pulled in the width to focus the UI */
+    margin: 0 auto;
     margin-top: 10px;
 }
 
-/* --- THE CARDS (Polished & Sized) --- */
+/* --- THE CARDS (Optimized Proportions) --- */
 .card {
-    border: 1px solid var(--white); /* Crisp white border */
+    border: 1px solid var(--white);
     background: rgba(255, 255, 255, 0.02);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 20px 15px; /* Tightened padding */
     text-align: center;
     cursor: pointer;
-    
-    /* Ensure border and hover effect stay perfectly aligned */
     box-sizing: border-box; 
     height: 100%;
     width: 100%;
-    
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     backdrop-filter: blur(2px);
 }
 
-/* --- THE HOVER (The "White Box" Logic) --- */
-.card:hover {
-    background-color: #ffffff !important;
-    transform: translateY(-8px); /* Slightly more pronounced lift */
-    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.15);
+.card h3 {
+    font-family: 'Syncopate';
+    font-size: 0.95rem; /* Scaled down slightly to match the sleeker box */
+    letter-spacing: 3px;
+    margin-bottom: 8px;
 }
 
-/* Forces text to black on hover so it remains legible */
+.card p {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    max-width: 85%;
+    line-height: 1.4;
+}
+
+/* --- THE HOVER (The "White Box" Still Hits Hard) --- */
+.card:hover {
+    background-color: #ffffff !important;
+    transform: translateY(-5px); /* Reduced lift to match the smaller size */
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+}
+
 .card:hover h3, 
 .card:hover p {
     color: #000000 !important;
     opacity: 1;
-}
-
-.card h3 {
-    font-family: 'Syncopate';
-    font-size: 1.1rem; /* Slightly larger title */
-    letter-spacing: 4px;
-    margin-bottom: 12px;
-}
-
-.card p {
-    font-size: 0.8rem;
-    opacity: 0.5;
-    max-width: 80%;
 }
 
 .card-link {
