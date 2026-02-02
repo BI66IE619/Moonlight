@@ -95,19 +95,19 @@ body, html {
     padding: 40px;
 }
 
-/* --- THE GRID (Perfectly Balanced) --- */
+/* --- THE GRID (Sized for Impact) --- */
 .grid {
     display: grid; 
     grid-template-columns: repeat(3, 1fr);
-    /* Reduced from 220px to 180px for a sleeker profile */
-    grid-template-rows: repeat(2, 180px); 
-    gap: 20px; /* Tighter gap to match the title's clean lines */
+    /* Bumping row height from 180px to 205px for more presence */
+    grid-template-rows: repeat(2, 205px); 
+    gap: 25px; 
     width: 100%;
-    max-width: 1150px; /* Slightly narrower to focus the eye */
-    margin-top: 10px;
+    max-width: 1250px; /* Slightly wider to accommodate bigger boxes */
+    margin-top: 15px;
 }
 
-/* --- THE INVERSION EFFECT --- */
+/* --- THE CARDS (Refined) --- */
 .card {
     border: 1px solid var(--border);
     background: rgba(255, 255, 255, 0.02);
@@ -115,30 +115,27 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* Optimized padding to balance internal space */
-    padding: 25px 15px; 
+    padding: 35px 20px; /* Increased internal vertical space */
     text-align: center;
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     backdrop-filter: blur(2px);
-    transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
-    z-index: 2;
 }
 
-/* This is the part that creates the "White Box" */
-.card:hover {
-    background-color: #ffffff !important; /* Forces the background to true white */
-    border-color: #ffffff;
-    transform: translateY(-5px); /* Subtle lift */
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); /* Soft glow around the box */
+.card h3 {
+    font-family: 'Syncopate';
+    font-size: 1.05rem; /* Slightly larger text for the bigger box */
+    letter-spacing: 4px;
+    margin-bottom: 10px;
 }
 
-/* Ensures the text turns black so it stays visible on the white background */
-.card:hover h3, 
-.card:hover p {
-    color: #000000 !important;
-    opacity: 1; /* Makes the description pop when hovered */
+.card p {
+    font-size: 0.8rem;
+    opacity: 0.5;
+    font-weight: 300;
+    max-width: 85%;
+    line-height: 1.4;
 }
 
 .card-link {
