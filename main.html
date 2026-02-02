@@ -3,27 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight Hub</title>
+    <title>Moonlight | Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="main-page">
     <canvas id="starfield"></canvas>
+    
+    <nav class="top-nav">
+        <div class="nav-logo">M<span>OONLIGHT</span></div>
+        <div class="nav-status">SYSTEMS: <span class="online">OPTIMAL</span></div>
+    </nav>
 
-    <header class="main-header">
-        <div class="header-content">
-            <h1>MOONLIGHT</h1>
-            <p>Your premiere unblocked hub for entertainment and productivity. Designed for students, by students.</p>
-        </div>
+    <header class="hero">
+        <h1 class="hero-title">MOONLIGHT</h1>
+        <div class="hero-line"></div>
+        <p class="hero-subtitle">Your premiere unblocked hub for entertainment and productivity. <br><span>Designed for students, by students.</span></p>
     </header>
 
-    <main class="grid-container">
-        <div class="module-card"><h2>GAMES</h2></div>
-        <div class="module-card"><h2>APPS</h2></div>
-        <div class="module-card"><h2>MOVIES</h2></div>
-        <div class="module-card"><h2>MUSIC</h2></div>
-        <div class="module-card"><h2>VOICE CHAT</h2></div>
-        <div class="module-card"><h2>ACADEMIC</h2></div>
-    </main>
+    <div class="container">
+        <div class="grid">
+            <div class="card" data-label="01">
+                <div class="card-content">
+                    <h3>GAMES</h3>
+                    <p>High-performance browser gaming.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+            <div class="card" data-label="02">
+                <div class="card-content">
+                    <h3>APPS</h3>
+                    <p>Essential web-based utilities.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+            <div class="card" data-label="03">
+                <div class="card-content">
+                    <h3>CINEMA</h3>
+                    <p>Streamlined media interface.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+            <div class="card" data-label="04">
+                <div class="card-content">
+                    <h3>AUDIO</h3>
+                    <p>Minimalist rhythm & sound.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+            <div class="card" data-label="05">
+                <div class="card-content">
+                    <h3>VOICE</h3>
+                    <p>Encrypted community comms.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+            <div class="card" data-label="06">
+                <div class="card-content">
+                    <h3>LABS</h3>
+                    <p>Experimental tools & scripts.</p>
+                </div>
+                <div class="card-border"></div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
