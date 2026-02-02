@@ -1,53 +1,105 @@
-/* Fixed 6-column grid that won't collapse on mobile */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); 
-    gap: 25px;
-    padding: 20px;
-    max-width: 1100px;
-    margin: 0 auto;
-    /* This prevents the grid from becoming a single column on small screens */
-    width: 100%;
-    box-sizing: border-box;
+:root {
+    --bg-color: #000000;
+    --border-color: #ffffff;
+    --text-color: #ffffff;
+    --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Base module style: spans 2 columns */
-.module {
-    grid-column: span 2;
-    position: relative;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 40px 10px; /* Adjusted padding for better fit */
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Background Starfield */
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Loading Screen Styles */
+.loading-body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    min-width: 0; /* Prevents overflow */
+    align-items: center;
+    height: 100vh;
 }
 
-/* Centering the bottom row */
-/* Academic Hub starts at column 2 */
-.module:nth-child(4) {
-    grid-column: 2 / span 2;
+.logo-circle {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: pulse 2s infinite ease-in-out;
 }
 
-/* Voice Chat starts at column 4 */
-.module:nth-child(5) {
-    grid-column: 4 / span 2;
-}
-
-/* Ensure icons and text stay centered */
-.module .icon {
-    font-size: 2rem;
-    margin-bottom: 15px;
-    transition: transform 0.3s ease;
-}
-
-.module span {
-    font-size: 0.7rem;
-    letter-spacing: 2px;
+.loading-text {
+    letter-spacing: 10px;
+    font-weight: 200;
     text-align: center;
+}
+
+/* Main Hub Styles */
+.main-header {
+    text-align: center;
+    padding: 60px 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-header h1 {
+    font-size: 3rem;
+    letter-spacing: 15px;
+    margin: 0;
+}
+
+.main-header p {
+    font-weight: 200;
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.module-card {
+    border: 1px solid var(--border-color);
+    padding: 60px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.module-card h2 {
+    font-weight: 300;
+    letter-spacing: 4px;
+    transition: var(--transition);
+}
+
+.module-card:hover {
+    background-color: var(--border-color);
+}
+
+.module-card:hover h2 {
+    color: var(--bg-color);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.5; }
 }
