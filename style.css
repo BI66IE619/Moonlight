@@ -1,103 +1,92 @@
-@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;700&display=swap');
-
-:root {
-    --black: #050505;
-    --white: #ffffff;
-    --accent: #ffffff;
-    --muted: rgba(255, 255, 255, 0.4);
-    --border: rgba(255, 255, 255, 0.15);
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
+/* --- Core Layout Lock --- */
+body, html {
+    margin: 0;
+    padding: 0;
     background-color: var(--black);
     color: var(--white);
     font-family: 'Space Grotesk', sans-serif;
-    overflow-x: hidden;
-    transition: opacity 0.5s ease;
+    /* This is the magic part: */
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
 }
 
-#starfield {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    pointer-events: none;
+.main-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Spaced out top to bottom */
 }
 
-/* --- Loader Styles --- */
-.loading-body { height: 100vh; display: flex; align-items: center; justify-content: center; }
-.moon-loader {
-    width: 100px; height: 100px;
-    border: 1px solid var(--white);
-    border-radius: 50%;
-    position: relative;
-    margin: 0 auto 30px;
-}
-.orbit {
-    position: absolute;
-    width: 10px; height: 10px;
-    background: var(--white);
-    border-radius: 50%;
-    top: -5px; left: 50%;
-    animation: rotate 2s linear infinite;
-}
-
-.progress-bar {
-    width: 200px; height: 2px;
-    background: var(--border);
-    margin: 20px auto;
-    overflow: hidden;
-}
-.progress-fill {
-    width: 100%; height: 100%;
-    background: var(--white);
-    transform: translateX(-100%);
-    animation: load 3s forwards cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-/* --- Main Layout --- */
+/* --- Adjusted Navigation --- */
 .top-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 30px 50px; position: relative; z-index: 10;
+    flex: 0 0 auto; /* Don't shrink or grow */
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 20px 50px; 
+    z-index: 10;
 }
-.nav-logo { font-family: 'Syncopate'; font-weight: 700; letter-spacing: 5px; }
-.nav-logo span { font-weight: 400; opacity: 0.5; font-size: 0.8rem; }
-.online { color: #fff; text-shadow: 0 0 10px #fff; font-size: 0.7rem; }
 
-.hero { text-align: center; padding: 100px 20px 60px; z-index: 1; position: relative; }
+/* --- Compact Hero Section --- */
+.hero { 
+    flex: 0 0 auto;
+    text-align: center; 
+    padding: 20px 20px; 
+    z-index: 1;
+}
 .hero-title { 
-    font-family: 'Syncopate'; font-size: clamp(2rem, 8vw, 5rem); 
-    letter-spacing: 20px; margin-bottom: 20px;
+    font-family: 'Syncopate'; 
+    font-size: clamp(1.5rem, 5vw, 3.5rem); /* Scaled down slightly */
+    letter-spacing: 15px; 
+    margin-bottom: 10px;
 }
-.hero-line { width: 50px; height: 1px; background: var(--white); margin: 0 auto 30px; }
-.hero-subtitle { font-weight: 300; letter-spacing: 2px; line-height: 1.6; opacity: 0.8; }
-.hero-subtitle span { font-size: 0.8rem; opacity: 0.5; }
+.hero-line { width: 40px; height: 1px; background: var(--white); margin: 0 auto 15px; }
+.hero-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.7; }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 40px 100px; position: relative; z-index: 1; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+/* --- Scalable Grid --- */
+.container { 
+    flex: 1; /* Take up all remaining vertical space */
+    width: 100%;
+    max-width: 1400px; 
+    margin: 0 auto; 
+    padding: 20px 40px 40px; 
+    display: flex;
+    align-items: center; /* Center the grid vertically in the remaining space */
+}
 
-/* --- Button/Card Style --- */
+.grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+    grid-template-rows: repeat(2, 1fr);    /* Force 2 rows */
+    gap: 20px; 
+    width: 100%;
+    height: 100%; /* Fill the container */
+}
+
+/* --- Compact Cards --- */
 .card {
-    position: relative; background: rgba(255, 255, 255, 0.02);
+    position: relative; 
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border);
-    padding: 50px 30px; cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    text-align: center;
 }
-.card::before {
-    content: attr(data-label); position: absolute; top: 20px; right: 20px;
-    font-size: 0.7rem; color: var(--muted); font-family: 'Syncopate';
-}
-.card h3 { font-family: 'Syncopate'; font-size: 1.2rem; margin-bottom: 10px; letter-spacing: 3px; }
-.card p { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
 
-.card:hover {
-    background: var(--white); transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+.card h3 { 
+    font-family: 'Syncopate'; 
+    font-size: 1rem; 
+    margin-bottom: 8px; 
+    letter-spacing: 2px; 
 }
-.card:hover h3, .card:hover p, .card:hover::before { color: var(--black); }
 
-/* --- Animations --- */
-@keyframes rotate { from { transform: rotate(0deg) translateX(50px) rotate(0deg); } to { transform: rotate(360deg) translateX(50px) rotate(-360deg); } }
-@keyframes load { to { transform: translateX(0); } }
+.card p { 
+    font-size: 0.75rem; 
+    max-width: 80%;
+}
