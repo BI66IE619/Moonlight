@@ -140,3 +140,14 @@ body, html {
     color: #000000 !important;
     opacity: 1; /* Makes the description pop when hovered */
 }
+
+.card-link {
+    text-decoration: none; /* Removes underline */
+    color: inherit;       /* Keeps text white */
+    display: block;       /* Makes the whole area clickable */
+    height: 100%;
+}
+
+.card-link:focus {
+    outline: none;        /* Keeps the clean aesthetic even on click */
+}
