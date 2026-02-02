@@ -84,13 +84,14 @@ body, html {
 }
 
 .grid {
-    display: grid;
+    display: grid; 
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 20px;
+    /* Increased row height to give cards more vertical presence */
+    grid-template-rows: repeat(2, 220px); 
+    gap: 30px; /* Wider gap for a more premium spread */
     width: 100%;
-    max-width: 1200px;
-    max-height: 550px;
+    max-width: 1300px; /* Slightly wider container */
+    margin-top: 20px;
 }
 
 .card {
@@ -100,21 +101,27 @@ body, html {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    padding: 40px 20px; /* Increased vertical padding */
+    text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    /* Subtle backdrop blur makes the stars look "behind" frosted glass */
+    backdrop-filter: blur(2px); 
 }
 
 .card h3 {
     font-family: 'Syncopate';
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
+    font-size: 1.1rem; 
+    letter-spacing: 4px;
+    margin-bottom: 12px;
 }
 
 .card p {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     opacity: 0.5;
+    font-weight: 300;
+    max-width: 80%; /* Keeps text centered and readable */
 }
 
 /* --- Interaction --- */
