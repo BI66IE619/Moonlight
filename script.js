@@ -1,6 +1,6 @@
 /**
  * MOONLIGHT CORE ENGINE
- * Version 1.2 - Fixed Layering & Viewport Logic
+ * Version 1.3 - Fixed Render Layering & Star Physics
  */
 
 const canvas = document.getElementById('starfield');
@@ -13,133 +13,114 @@ const STAR_COUNT = 150;
 
 /**
  * SYSTEM INITIALIZATION
- * Sets up the canvas and generates star objects.
+ * Calibrates canvas size and generates starfield data.
  */
 function init() {
-    // Force canvas to fill the window without creating scrollbars
+    // Prevent scrollbars by strictly matching viewport dimensions
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    // Reset star array on resize to prevent "stretching"
     stars = [];
     for (let i = 0; i < STAR_COUNT; i++) {
         stars.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            size: Math.random() * 1.6,
+            size: Math.random() * 1.5 + 0.5,
             opacity: Math.random(),
-            speedX: (Math.random() - 0.5) * 0.15,
+            speedX: (Math.random() - 0.5) * 0.1,
             speedY: (Math.random() - 0.5) * 0.1,
-            parallaxMult: Math.random() * 0.5 + 0.1 // Unique depth for each star
+            parallax: Math.random() * 0.03 // Individual depth multiplier
         });
     }
 }
 
 /**
- * MOUSE TRACKING
- * Calculates displacement from center for the parallax effect.
+ * INTERACTIVE PARALLAX
+ * Updates mouse coordinates for background movement.
  */
 window.addEventListener('mousemove', (e) => {
-    // Determine mouse distance from the center of the screen
-    mouseX = (e.clientX - window.innerWidth / 2);
-    mouseY = (e.clientY - window.innerHeight / 2);
+    mouseX = e.clientX - window.innerWidth / 2;
+    mouseY = e.clientY - window.innerHeight / 2;
 });
 
 /**
- * ANIMATION LOOP
- * Handles the background rendering and star drift.
+ * ANIMATION ENGINE
+ * Handles frame-by-frame rendering of the starfield.
  */
 function animate() {
-    // 1. Clear the frame with true black
+    // Clear background with true black
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // 2. Render Stars
     stars.forEach(star => {
         ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
         ctx.beginPath();
         
-        // Apply Parallax: Star position + (Mouse offset * depth multiplier)
-        // Divide mouseX/Y to keep the movement subtle
-        const xPos = star.x + (mouseX * 0.02 * star.parallaxMult);
-        const yPos = star.y + (mouseY * 0.02 * star.parallaxMult);
+        // Calculate position based on movement + mouse parallax
+        const xPos = star.x + (mouseX * star.parallax);
+        const yPos = star.y + (mouseY * star.parallax);
         
         ctx.arc(xPos, yPos, star.size, 0, Math.PI * 2);
         ctx.fill();
         
-        // 3. Constant Drift Logic
+        // Apply constant drift
         star.x += star.speedX;
         star.y += star.speedY;
 
-        // Screen Wrap-around (Infinite Universe)
-        if (star.x < -20) star.x = canvas.width + 20;
-        if (star.x > canvas.width + 20) star.x = -20;
-        if (star.y < -20) star.y = canvas.height + 20;
-        if (star.y > canvas.height + 20) star.y = -20;
+        // Screen Wrap (Infinite Loop)
+        if (star.x < -10) star.x = canvas.width + 10;
+        if (star.x > canvas.width + 10) star.x = -10;
+        if (star.y < -10) star.y = canvas.height + 10;
+        if (star.y > canvas.height + 10) star.y = -10;
     });
     
     requestAnimationFrame(animate);
 }
 
 /**
- * MODULE INTERACTION
- * Handles clicking on the grid cards.
+ * COMPONENT HANDLERS
+ * Attaches logic to the UI grid cards.
  */
-function setupInteractions() {
+function setupCards() {
     const cards = document.querySelectorAll('.card');
-    
     cards.forEach(card => {
         card.addEventListener('click', function() {
-            const moduleName = this.querySelector('h3').innerText;
+            const label = this.querySelector('h3').innerText;
             
-            // Interaction Feedback
-            this.style.transform = "scale(0.95)";
-            this.style.borderColor = "#ffffff";
+            // Visual feedback
+            this.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
             
             setTimeout(() => {
-                this.style.transform = "";
-                console.log(`Moonlight: Loading ${moduleName} UI...`);
-                // Trigger transition to specific module here
-            }, 150);
+                this.style.backgroundColor = "";
+                console.log(`Moonlight Hub: Accessing ${label}...`);
+                // Add redirection logic here
+            }, 100);
         });
     });
 }
 
 /**
- * LOADER LOGIC
- * Progress simulation for index.html.
+ * SYSTEM BOOT
  */
-const runLoader = () => {
-    const statusText = document.querySelector('.status');
-    const progressFill = document.querySelector('.progress-fill');
-    
-    if (statusText && progressFill) {
-        const statuses = [
-            "INITIALIZING...",
-            "BYPASSING FILTERS...",
-            "STABILIZING CORE...",
-            "ACCESS GRANTED"
-        ];
-        
-        let step = 0;
-        const interval = setInterval(() => {
-            if (step < statuses.length) {
-                statusText.innerText = statuses[step];
-                step++;
-            } else {
-                clearInterval(interval);
-            }
-        }, 700);
-    }
-};
-
-// --- Execute ---
-window.addEventListener('resize', init);
-
-// Wait for DOM to load before initializing
 document.addEventListener('DOMContentLoaded', () => {
     init();
     animate();
-    setupInteractions();
-    runLoader();
+    setupCards();
+    
+    // Status update logic if on index.html
+    const status = document.querySelector('.status');
+    if (status) {
+        const steps = ["STABILIZING INTERFACE...", "CLEARING CACHE...", "CONNECTION SECURE"];
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < steps.length) {
+                status.innerText = steps[i];
+                i++;
+            } else {
+                clearInterval(interval);
+            }
+        }, 800);
+    }
 });
+
+window.addEventListener('resize', init);
