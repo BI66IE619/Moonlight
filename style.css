@@ -97,7 +97,19 @@ body, html {
 
 /* --- THE INVERSION EFFECT --- */
 .card {
-    /* ... existing styles ... */
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Optimized padding to balance internal space */
+    padding: 25px 15px; 
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    backdrop-filter: blur(2px);
     transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
     z-index: 2;
 }
