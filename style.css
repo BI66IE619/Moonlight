@@ -1,54 +1,124 @@
-/* Ensure the starfield stays in the background but doesn't swallow clicks */
+@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;700&display=swap');
+
+:root {
+    --black: #000000;
+    --white: #ffffff;
+    --border: rgba(255, 255, 255, 1); /* Full opacity for crisp lines */
+    --card-bg: rgba(255, 255, 255, 0.03);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow: hidden; /* Stops the scrolling */
+}
+
 #starfield {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1; /* Keep it behind everything */
+    z-index: 0; /* Behind everything */
     pointer-events: none;
 }
 
-/* Fix the layout collapse */
-body, html {
-    margin: 0;
-    padding: 0;
-    background-color: #050505;
-    color: #ffffff;
-    font-family: 'Space Grotesk', sans-serif;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden; /* Strict no-scroll */
-    display: flex;
-    flex-direction: column;
-}
-
-/* This container ensures the grid and hero actually appear */
 .main-page {
     position: relative;
-    z-index: 1; 
+    z-index: 1;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-/* Add a min-height to the grid to prevent it from vanishing */
-.container { 
-    flex: 1;
-    width: 100%;
-    max-width: 1400px; 
-    margin: 0 auto; 
-    padding: 20px 40px; 
+/* --- Professional Header --- */
+.top-nav {
+    padding: 30px 60px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    min-height: 0; /* Important for Chrome flexbox bug */
 }
 
-.grid { 
-    display: grid; 
+.nav-logo { font-family: 'Syncopate'; font-weight: 700; letter-spacing: 5px; }
+.nav-status { font-size: 0.7rem; letter-spacing: 2px; opacity: 0.6; }
+
+/* --- Compact Hero --- */
+.hero {
+    text-align: center;
+    padding: 10px 0 30px 0;
+}
+
+.hero-title {
+    font-family: 'Syncopate';
+    font-size: 3rem;
+    letter-spacing: 20px;
+    margin-bottom: 10px;
+}
+
+.hero-subtitle {
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    opacity: 0.6;
+}
+
+/* --- THE GRID (The Fix) --- */
+.container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 60px 60px 60px;
+}
+
+.grid {
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 20px; 
+    gap: 25px;
     width: 100%;
-    height: 90%; /* Give it some breathing room */
+    max-width: 1200px;
+    height: 100%;
+    max-height: 500px; /* Limits height to keep it neat */
+}
+
+/* --- THE CARDS (The Fix) --- */
+.card {
+    border: 1px solid var(--border); /* This makes the white outline visible */
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.card h3 {
+    font-family: 'Syncopate';
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    font-weight: 300;
+}
+
+/* --- Interactions --- */
+.card:hover {
+    background: var(--white);
+    transform: translateY(-5px);
+}
+
+.card:hover h3, .card:hover p {
+    color: var(--black);
 }
