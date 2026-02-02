@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight | Loading</title>
+    <title>Moonlight | Initializing</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="loading-body">
-    <div class="loader-container">
-        <div class="logo-circle"></div>
-        <h1 class="loading-text">MOONLIGHT</h1>
+    <canvas id="starfield"></canvas>
+    <div class="loader-wrap">
+        <div class="moon-loader">
+            <div class="orbit"></div>
+        </div>
+        <div class="loading-info">
+            <h1 class="glitch-text" data-text="MOONLIGHT">MOONLIGHT</h1>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <p class="status">ESTABLISHING CONNECTION...</p>
+        </div>
     </div>
+    <script src="script.js"></script>
     <script>
-        // Redirect to main page after 3 seconds
-        setTimeout(() => {
-            window.location.href = 'main.html';
-        }, 3000);
+        setTimeout(() => { document.body.style.opacity = '0'; setTimeout(() => window.location.href = 'main.html', 500); }, 3500);
     </script>
 </body>
 </html>
