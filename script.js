@@ -124,3 +124,55 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('resize', init);
+
+/**
+ * TAB CLOAK ENGINE
+ * Mimics a productivity tool to bypass visual inspection.
+ */
+
+const cloakSettings = {
+    title: 'My Drive - Google Drive',
+    icon: 'https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png'
+};
+
+const originalSettings = {
+    title: document.title,
+    icon: '' // Will be grabbed on load
+};
+
+let isCloaked = false;
+
+function toggleCloak() {
+    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    
+    if (!isCloaked) {
+        // Save original if not already saved
+        if (!originalSettings.icon) {
+            const currentIcon = document.querySelector("link[rel*='icon']");
+            originalSettings.icon = currentIcon ? currentIcon.href : '';
+        }
+
+        // Apply Cloak
+        document.title = cloakSettings.title;
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = cloakSettings.icon;
+        document.getElementsByTagName('head')[0].appendChild(link);
+        
+        console.log("Moonlight: Ghost Mode Active.");
+    } else {
+        // Restore Moonlight
+        document.title = originalSettings.title;
+        link.href = originalSettings.icon;
+        console.log("Moonlight: Interface Restored.");
+    }
+    
+    isCloaked = !isCloaked;
+}
+
+// Listen for the 'Escape' key to toggle cloak
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        toggleCloak();
+    }
+});
