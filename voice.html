@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moonlight | Voice Comms</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="games.css">
+    <link rel="stylesheet" href="voice.css">
+    <script src="https://cdn.scaledrone.com/scaledrone.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+</head>
+<body class="voice-page">
+    <canvas id="starfield"></canvas>
+
+    <div id="identity-overlay" class="overlay">
+        <div class="identity-box">
+            <h3>ASSIGN IDENTITY</h3>
+            <p style="font-size: 0.6rem; opacity: 0.5; margin-bottom: 20px;">AI SCREENING ACTIVE</p>
+            <input type="text" id="username-input" placeholder="ENTER CALLSIGN..." maxlength="15">
+            <div id="filter-warning"></div>
+            <button id="init-btn" onclick="checkAndJoin()">INITIALIZE LINK</button>
+        </div>
+    </div>
+
+    <div class="ui-wrapper">
+        <nav class="top-nav">
+            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+            <div class="nav-links">
+                <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+                <span class="nav-status">STATUS: <span id="connection-status">ENCRYPTED</span></span>
+            </div>
+        </nav>
+
+        <div class="voice-container">
+            <div class="voice-comms-panel">
+                <div class="panel-layout">
+                    <div class="panel-main">
+                        <h2 class="glitch-text">MOONLIGHT // VOIP</h2>
+                        <p class="sys-note">SECURE WEBRTC CHANNEL 01</p>
+                        
+                        <div class="controls">
+                            <button id="mic-btn" class="disabled" disabled onclick="toggleMic()">MIC: OFF</button>
+                            <div class="vol-indicator">
+                                <div id="vol-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-list-sidebar">
+                        <h4>ACTIVE OPERATIVES</h4>
+                        <div id="member-list">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="games-grid" style="margin-top: 40px; opacity: 0.5; pointer-events: none;">
+                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 144.2 MHz</div></div></div>
+                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 433.0 MHz</div></div></div>
+                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 915.5 MHz</div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="audio-streams" style="display:none;"><audio id="localAudio" autoplay muted></audio></div>
+
+    <script src="script.js"></script>
+    <script type="module" src="voice-logic.js"></script>
+</body>
+</html>
