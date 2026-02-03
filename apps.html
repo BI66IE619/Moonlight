@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Moonlight | Applications</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="apps.css">
-</head>
+    <link rel="stylesheet" href="games.css"> </head>
 <body class="apps-page">
     <canvas id="starfield"></canvas>
 
@@ -23,30 +22,26 @@
             <div class="search-line"></div>
         </div>
 
-        <div class="apps-container">
-            <div class="apps-grid" id="appsGrid">
+        <div class="games-container"> <div class="games-grid" id="appsGrid">
                 
-                <div class="app-card-container">
-                    <div class="app-card" onclick="window.location.href='/a/discord.html'">
-                        <div class="app-icon">
-                            <img src="https://cdn.prod.website-files.com/6257adef93867e3d0390541b/625944ad3511200427181f0a_discord-logo-white.png" alt="Discord">
-                        </div>
-                        <div class="app-info">
-                            <h3>DISCORD</h3>
-                            <p>COMMUNICATION PLATFORM</p>
-                        </div>
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/discord.html'">
+                        <img src="https://wallpapers.com/images/hd/discord-logo-white-on-black-b70h6p876v6p7m8v.jpg" alt="Discord">
+                        <div class="game-name">Discord Web</div>
                     </div>
                 </div>
 
-                <div class="app-card-container">
-                    <div class="app-card" onclick="window.location.href='/a/vscode.html'">
-                        <div class="app-icon">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Visual_Studio_Code_1.35_icon.svg" alt="VS Code">
-                        </div>
-                        <div class="app-info">
-                            <h3>VS CODE</h3>
-                            <p>WEB-BASED IDE</p>
-                        </div>
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/geforce.html'">
+                        <img src="https://static.vecteezy.com/system/resources/previews/018/930/500/non_2x/nvidia-logo-nvidia-icon-transparent-free-png.png" alt="GeForce Now">
+                        <div class="game-name">GeForce Now</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/vscode.html'">
+                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/visual-studio-code-icon.png" alt="VS Code">
+                        <div class="game-name">VS Code Web</div>
                     </div>
                 </div>
 
@@ -56,9 +51,9 @@
 
     <script src="script.js"></script>
     <script>
-        // Copying over our successful search & counter logic
+        // Synchronized Search & Counter Logic
         const searchInput = document.getElementById('appSearch');
-        const appCards = document.getElementsByClassName('app-card-container');
+        const appCards = document.getElementsByClassName('rectangle-container');
         const entryCount = document.getElementById('entryCount');
 
         function updateCounter() {
@@ -72,7 +67,7 @@
         searchInput.addEventListener('keyup', function() {
             const filter = searchInput.value.toLowerCase();
             for (let i = 0; i < appCards.length; i++) {
-                const name = appCards[i].querySelector('h3').innerText.toLowerCase();
+                const name = appCards[i].querySelector('.game-name').innerText.toLowerCase();
                 appCards[i].style.display = name.includes(filter) ? "" : "none";
             }
             updateCounter();
