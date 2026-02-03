@@ -15,17 +15,17 @@ async function screenUsername(name) {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const prompt = `
-        System: Moonlight Secure Terminal Identity Screening.
-        User Identity to Analyze: "${name}"
-        
-        Rules:
-        1. Reject names with profanity, slurs, or sexual content.
-        2. Reject names that try to bypass filters with symbols (e.g., @ for a).
-        3. Favour "Callsigns" or gaming handles.
-        
-        Response: You must respond ONLY with a JSON object: {"status": "APPROVED" | "REJECTED", "reason": "short explanation"}
-    `;
-
+    System: Moonlight Secure Terminal.
+    Task: Extremely strict identity screening.
+    
+    Reject any name that:
+    1. Contains animals combined with colors if they have historical negative connotations.
+    2. Uses "slang" that could be double-entendre.
+    3. Even slightly borders on unprofessional.
+    
+    Analyze: "${name}"
+    Response: ONLY JSON {"status": "APPROVED" | "REJECTED", "reason": "string"}
+`;
     try {
         const result = await model.generateContent(prompt);
         const response = await result.response;
