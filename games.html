@@ -10,13 +10,18 @@
     <canvas id="starfield"></canvas>
 
     <div class="ui-wrapper">
-        <nav class="top-nav">
-            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
-            <div class="nav-links">
-    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
-    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
+    <nav class="top-nav">
+        <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+        <div class="nav-links">
+            <div class="nav-cache-monitor" title="Thumbnails stored in local IndexedDB">
+                <span class="cache-dot" id="cache-dot"></span>
+                <span class="nav-status">LOCAL_SYNC: <span id="cached-count">0</span> / <span id="entryCount">0</span></span>
             </div>
-        </nav>
+            
+            <span onclick="toggleCloak()" style="cursor:pointer; margin-left: 20px;">CLOAK [ESC]</span>
+        </div>
+    </nav>
+</div>
 
         <div class="search-container">
             <input type="text" id="gameSearch" placeholder="SEARCH DATABASE..." autocomplete="off">
@@ -27,7 +32,7 @@
             <div class="games-grid" id="gamesGrid">
                 <div class="rectangle-container">
                     <div class="rectangle" data-category="mobile" onclick="window.location.href='/subwaysurfers.html'">
-                        <img src="https://files.catbox.moe/bmolbh.png" alt="subway surfers series">
+                        <img class="cached-img" data-src="https://files.catbox.moe/bmolbh.png" alt="subway surfers series">
                         <div class="game-name">subway surfers series</div>
                     </div>
                 </div>
