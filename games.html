@@ -10,17 +10,13 @@
     <canvas id="starfield"></canvas>
 
     <div class="ui-wrapper">
-    <nav class="top-nav">
-        <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
-        <div class="nav-links">
-            <div class="nav-cache-monitor" title="Thumbnails stored in local IndexedDB">
-                <span class="cache-dot" id="cache-dot"></span>
-                <span class="nav-status">LOCAL_SYNC: <span id="cached-count">0</span> / <span id="entryCount">0</span></span>
-            </div>
-            
-            <span onclick="toggleCloak()" style="cursor:pointer; margin-left: 20px;">CLOAK [ESC]</span>
+
+        <nav class="top-nav">
+            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+            <div class="nav-links">
+    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
         </div>
-    </nav>
 </div>
 
         <div class="search-container">
