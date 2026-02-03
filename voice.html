@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Moonlight | Voice Comms</title>
+    <title>Moonlight | Voice Coms</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="games.css">
     <link rel="stylesheet" href="voice.css">
@@ -20,9 +20,9 @@
 
     <div id="identity-overlay" class="overlay">
         <div class="identity-box">
-            <h3>ASSIGN IDENTITY</h3>
-            <p style="font-size: 0.6rem; opacity: 0.5; margin-bottom: 20px;">AI SCREENING ACTIVE</p>
-            <input type="text" id="username-input" placeholder="ENTER CALLSIGN..." maxlength="15">
+            <h3 class="glitch-text">ASSIGN CALLSIGN</h3>
+            <p style="font-size: 0.5rem; opacity: 0.4; letter-spacing: 2px;">SECURE TERMINAL // GEMINI 2.5 FLASH ACTIVE</p>
+            <input type="text" id="username-input" placeholder="INPUT IDENTITY..." maxlength="15" autocomplete="off">
             <div id="filter-warning"></div>
             <button id="init-btn" onclick="checkAndJoin()">INITIALIZE LINK</button>
         </div>
@@ -30,47 +30,30 @@
 
     <div class="ui-wrapper">
         <nav class="top-nav">
-            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
-            <div class="nav-links">
-                <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
-                <span class="nav-status">STATUS: <span id="connection-status">ENCRYPTED</span></span>
-            </div>
+            <div class="nav-logo" onclick="window.location.href='main.html'">M // BACK</div>
+            <div class="nav-status">CHANNEL: <span id="connection-status">STANDBY</span></div>
         </nav>
 
         <div class="voice-container">
             <div class="voice-comms-panel">
                 <div class="panel-layout">
                     <div class="panel-main">
-                        <h2 class="glitch-text">MOONLIGHT // VOIP</h2>
-                        <p class="sys-note">SECURE WEBRTC CHANNEL 01</p>
-                        
+                        <h2 class="glitch-text">VOICE COMMS</h2>
                         <div class="controls">
                             <button id="mic-btn" class="disabled" disabled onclick="toggleMic()">MIC: OFF</button>
-                            <div class="vol-indicator">
-                                <div id="vol-bar"></div>
-                            </div>
                         </div>
                     </div>
-
                     <div class="user-list-sidebar">
                         <h4>ACTIVE OPERATIVES</h4>
-                        <div id="member-list">
-                            </div>
+                        <div id="member-list"></div>
                     </div>
                 </div>
-            </div>
-
-            <div class="games-grid" style="margin-top: 40px; opacity: 0.5; pointer-events: none;">
-                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 144.2 MHz</div></div></div>
-                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 433.0 MHz</div></div></div>
-                <div class="rectangle-container"><div class="rectangle"><div class="game-name">FREQ: 915.5 MHz</div></div></div>
             </div>
         </div>
     </div>
 
     <div id="audio-streams" style="display:none;"><audio id="localAudio" autoplay muted></audio></div>
 
-    <script src="script.js"></script>
     <script type="module" src="voice-logic.js"></script>
 </body>
 </html>
