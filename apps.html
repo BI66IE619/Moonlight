@@ -4,76 +4,99 @@
     <meta charset="UTF-8">
     <title>Moonlight | Applications</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="games.css"> </head>
-<body class="apps-page">
+    <link rel="stylesheet" href="games.css">
+</head>
+<body class="games-page">
     <canvas id="starfield"></canvas>
 
     <div class="ui-wrapper">
         <nav class="top-nav">
             <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
             <div class="nav-links">
-                <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
-                <span class="nav-status">UTILITIES: <span id="entryCount">0</span> ACTIVE</span>
+    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
             </div>
         </nav>
 
         <div class="search-container">
-            <input type="text" id="appSearch" placeholder="SEARCH SYSTEM APPS..." autocomplete="off">
+            <input type="text" id="gameSearch" placeholder="SEARCH DATABASE..." autocomplete="off">
             <div class="search-line"></div>
         </div>
 
-        <div class="games-container"> <div class="games-grid" id="appsGrid">
+        <div class="games-container">
+            <div class="games-grid" id="gamesGrid">
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="placeholder" onclick="window.location.href='/a/emulatorjs/index.html.html'">
+                        <img src="https://files.catbox.moe/35jhlf.png" alt="emulatorjs">
+                        <div class="game-name">EmulatorJS</div>
+                    </div>
+                </div>
                 
                 <div class="rectangle-container">
-                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/discord.html'">
-                        <img src="https://wallpapers.com/images/hd/discord-logo-white-on-black-b70h6p876v6p7m8v.jpg" alt="Discord">
-                        <div class="game-name">Discord Web</div>
+                    <div class="rectangle" data-category="placeholder" onclick="window.location.href='/a/etchasketch/index.html'">
+                        <img src="/a/assets/etchasketch.png" alt="etchasketch">
+                        <div class="game-name">EtchASketch</div>
                     </div>
                 </div>
 
                 <div class="rectangle-container">
-                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/geforce.html'">
-                        <img src="https://static.vecteezy.com/system/resources/previews/018/930/500/non_2x/nvidia-logo-nvidia-icon-transparent-free-png.png" alt="GeForce Now">
-                        <div class="game-name">GeForce Now</div>
+                    <div class="rectangle" data-category="placeholder" onclick="window.location.href='/a/fluidsim/index.html'">
+                        <img src="https://files.catbox.moe/9ccgcg.jpg" alt="fluidsim">
+                        <div class="game-name">FluidSimulator</div>
                     </div>
                 </div>
 
                 <div class="rectangle-container">
-                    <div class="rectangle" data-category="utility" onclick="window.location.href='/a/vscode.html'">
-                        <img src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/visual-studio-code-icon.png" alt="VS Code">
-                        <div class="game-name">VS Code Web</div>
+                    <div class="rectangle" data-category="placeholder" onclick="window.location.href='/a/godoblocks/index.html'">
+                        <img src="https://files.catbox.moe/iyav1n.jpg" alt="godoblocks">
+                        <div class="game-name">GoDoBlocks</div>
                     </div>
                 </div>
 
-            </div>
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="placeholder" onclick="window.location.href='/e.html'">
+                        <img src="/a/assets/exploits.png" alt="exploits">
+                        <div class="game-name">Exploits</div>
+                    </div>
+                </div>
+                </div>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Synchronized Search & Counter Logic
-        const searchInput = document.getElementById('appSearch');
-        const appCards = document.getElementsByClassName('rectangle-container');
-        const entryCount = document.getElementById('entryCount');
+    const searchInput = document.getElementById('gameSearch');
+    const gameCards = document.getElementsByClassName('rectangle-container');
+    const entryCount = document.getElementById('entryCount');
 
-        function updateCounter() {
-            let visibleCount = 0;
-            for (let i = 0; i < appCards.length; i++) {
-                if (appCards[i].style.display !== "none") visibleCount++;
+    // Function to update the counter
+    function updateCounter() {
+        let visibleCount = 0;
+        for (let i = 0; i < gameCards.length; i++) {
+            if (gameCards[i].style.display !== "none") {
+                visibleCount++;
             }
-            entryCount.innerText = visibleCount;
         }
+        entryCount.innerText = visibleCount;
+    }
 
-        searchInput.addEventListener('keyup', function() {
-            const filter = searchInput.value.toLowerCase();
-            for (let i = 0; i < appCards.length; i++) {
-                const name = appCards[i].querySelector('.game-name').innerText.toLowerCase();
-                appCards[i].style.display = name.includes(filter) ? "" : "none";
+    // Live Search Filter Logic
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        
+        for (let i = 0; i < gameCards.length; i++) {
+            const gameName = gameCards[i].querySelector('.game-name').innerText.toLowerCase();
+            if (gameName.includes(filter)) {
+                gameCards[i].style.display = "";
+            } else {
+                gameCards[i].style.display = "none";
             }
-            updateCounter();
-        });
+        }
+        updateCounter(); // Update count after filtering
+    });
 
-        window.addEventListener('DOMContentLoaded', updateCounter);
-    </script>
+    // Initial count on page load
+    window.addEventListener('DOMContentLoaded', updateCounter);
+</script>
 </body>
 </html>
