@@ -109,3 +109,15 @@
     background: #fff;
     color: #000;
 }
+
+/* Styling for the entry counter to make it pop */
+#entryCount {
+    color: #ffffff;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Ensure the grid doesn't collapse when empty */
+.games-grid {
+    min-height: 200px;
+}
