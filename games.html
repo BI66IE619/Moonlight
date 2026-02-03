@@ -13,8 +13,8 @@
         <nav class="top-nav">
             <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
             <div class="nav-links">
-                <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
-                <span class="nav-status">300+ ENTRIES</span>
+    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
             </div>
         </nav>
 
@@ -2053,22 +2053,38 @@
 
     <script src="script.js"></script>
     <script>
-        // Live Search Filter Logic
-        const searchInput = document.getElementById('gameSearch');
-        const gameCards = document.getElementsByClassName('rectangle-container');
+    const searchInput = document.getElementById('gameSearch');
+    const gameCards = document.getElementsByClassName('rectangle-container');
+    const entryCount = document.getElementById('entryCount');
 
-        searchInput.addEventListener('keyup', function() {
-            const filter = searchInput.value.toLowerCase();
-            
-            for (let i = 0; i < gameCards.length; i++) {
-                const gameName = gameCards[i].querySelector('.game-name').innerText.toLowerCase();
-                if (gameName.includes(filter)) {
-                    gameCards[i].style.display = "";
-                } else {
-                    gameCards[i].style.display = "none";
-                }
+    // Function to update the counter
+    function updateCounter() {
+        let visibleCount = 0;
+        for (let i = 0; i < gameCards.length; i++) {
+            if (gameCards[i].style.display !== "none") {
+                visibleCount++;
             }
-        });
-    </script>
+        }
+        entryCount.innerText = visibleCount;
+    }
+
+    // Live Search Filter Logic
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        
+        for (let i = 0; i < gameCards.length; i++) {
+            const gameName = gameCards[i].querySelector('.game-name').innerText.toLowerCase();
+            if (gameName.includes(filter)) {
+                gameCards[i].style.display = "";
+            } else {
+                gameCards[i].style.display = "none";
+            }
+        }
+        updateCounter(); // Update count after filtering
+    });
+
+    // Initial count on page load
+    window.addEventListener('DOMContentLoaded', updateCounter);
+</script>
 </body>
 </html>
