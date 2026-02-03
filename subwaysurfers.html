@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moonlight | Subway Surfers</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="games.css">
+</head>
+<body class="games-page">
+    <canvas id="starfield"></canvas>
+
+    <div class="ui-wrapper">
+        <nav class="top-nav">
+            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+            <div class="nav-links">
+    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
+            </div>
+        </nav>
+
+        <div class="search-container">
+            <input type="text" id="gameSearch" placeholder="SEARCH DATABASE..." autocomplete="off">
+            <div class="search-line"></div>
+        </div>
+
+        <div class="games-container">
+            <div class="games-grid" id="gamesGrid">
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/original.html'">
+                        <img src="https://files.catbox.moe/h7lqq7.jpg" alt="Original">
+                        <div class="game-name">Original</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/barcelona.html'">
+                        <img src="https://files.catbox.moe/o253yw.jpg" alt="Barcelona">
+                        <div class="game-name">Barcelona</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/beijing.html'">
+                        <img src="https://files.catbox.moe/woiiml.jpg" alt="Beijing">
+                        <div class="game-name">Beijing</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/berlin.html'">
+                        <img src="https://files.catbox.moe/u36407.jpg" alt="Berlin">
+                        <div class="game-name">Berlin</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/bueno-aries.html'">
+                        <img src="https://files.catbox.moe/4t5wh7.jpg" alt="Bueno Aries">
+                        <div class="game-name">Bueno Aries</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/havana.html'">
+                        <img src="https://files.catbox.moe/k69c94.jpg" alt="Havana">
+                        <div class="game-name">Havana</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/houston.html'">
+                        <img src="https://files.catbox.moe/z0levc.jpg" alt="Houston">
+                        <div class="game-name">Houston</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/iceland.html'">
+                        <img src="https://files.catbox.moe/cksd7g.jpg" alt="Iceland">
+                        <div class="game-name">Iceland</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/london.html'">
+                        <img src="https://files.catbox.moe/x2y8c0.jpg" alt="London">
+                        <div class="game-name">London</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/mexico.html'">
+                        <img src="https://files.catbox.moe/t2lyyl.jpg" alt="Mexico">
+                        <div class="game-name">Mexico</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/miami.html'">
+                        <img src="https://files.catbox.moe/trhdov.jpg" alt="Miami">
+                        <div class="game-name">Miami</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/monaco.html'">
+                        <img src="https://files.catbox.moe/khn9ar.jpg" alt="Monaco">
+                        <div class="game-name">Monaco</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/new-orleans.html'">
+                        <img src="https://files.catbox.moe/qz2kgl.jpg" alt="New Orleans">
+                        <div class="game-name">New Orleans</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/san-fransico.html'">
+                        <img src="https://files.catbox.moe/ds1wxj.jpg" alt="San Francisco">
+                        <div class="game-name">San Francisco</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/st-petersburg.html'">
+                        <img src="https://files.catbox.moe/xcw0r2.jpg" alt="St. Petersburg">
+                        <div class="game-name">St. Petersburg</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/winter-holiday.html'">
+                        <img src="https://files.catbox.moe/3yyfwn.jpg" alt="Winter Holiday">
+                        <div class="game-name">Winter Holiday</div>
+                    </div>
+                </div>
+
+              <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/subwaysurfers/zurich.html'">
+                        <img src="https://files.catbox.moe/e0a9kb.jpg" alt="Zurich">
+                        <div class="game-name">Zurich</div>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    const searchInput = document.getElementById('gameSearch');
+    const gameCards = document.getElementsByClassName('rectangle-container');
+    const entryCount = document.getElementById('entryCount');
+
+    // Function to update the counter
+    function updateCounter() {
+        let visibleCount = 0;
+        for (let i = 0; i < gameCards.length; i++) {
+            if (gameCards[i].style.display !== "none") {
+                visibleCount++;
+            }
+        }
+        entryCount.innerText = visibleCount;
+    }
+
+    // Live Search Filter Logic
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        
+        for (let i = 0; i < gameCards.length; i++) {
+            const gameName = gameCards[i].querySelector('.game-name').innerText.toLowerCase();
+            if (gameName.includes(filter)) {
+                gameCards[i].style.display = "";
+            } else {
+                gameCards[i].style.display = "none";
+            }
+        }
+        updateCounter(); // Update count after filtering
+    });
+
+    // Initial count on page load
+    window.addEventListener('DOMContentLoaded', updateCounter);
+</script>
+</body>
+</html>
