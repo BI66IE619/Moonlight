@@ -7,9 +7,10 @@ const genAI = new GoogleGenerativeAI(GEMINI_KEY);
 const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
 let drone, room, localStream;
-let pcPeers = {}; // Track multiple connections: { clientId: RTCPeerConnection }
+let pcPeers = {}; 
+let currentMembers = []; // Global state for the user list
 
-// --- 1. AI SCREENING ---
+// 1. AI SCREENING
 async function screenUsername(name) {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const prompt = `Return JSON {"status": "APPROVED" | "REJECTED", "reason": "string"} for username: "${name}".`;
@@ -21,62 +22,64 @@ async function screenUsername(name) {
 
 window.checkAndJoin = async () => {
     const input = document.getElementById('username-input');
-    const btn = document.getElementById('init-btn');
     const name = input.value.trim();
     if (name.length < 2) return;
 
-    btn.innerText = "VERIFYING...";
     const check = await screenUsername(name);
-
     if (check.status === "REJECTED") {
-        document.getElementById('filter-warning').innerText = check.reason.toUpperCase();
-        document.getElementById('filter-warning').style.display = "block";
-        btn.innerText = "INITIALIZE LINK";
+        alert(check.reason);
     } else {
         document.getElementById('identity-overlay').style.display = "none";
         startComms(name);
     }
 };
 
-// --- 2. THE CORE ENGINE ---
+// 2. THE ENGINE
 function startComms(username) {
     drone = new ScaleDrone(SCALEDRONE_ID, { data: { name: username } });
 
     drone.on('open', error => {
         if (error) return console.error(error);
+        
+        // Use observable- prefix for member tracking
         room = drone.subscribe('observable-moonlight-voice');
 
-        // Capture local audio
+        // Capture Mic immediately
         navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
             localStream = stream;
-            // Initially muted
-            localStream.getAudioTracks()[0].enabled = false;
+            localStream.getAudioTracks()[0].enabled = false; // Start muted
+            document.getElementById('mic-btn').disabled = false;
+            document.getElementById('mic-btn').classList.remove('disabled');
             setupVoiceActivity(stream);
         });
 
-        room.on('members', members => {
-            updateUI(members);
-            // Connect to everyone already in the room
-            members.forEach(m => {
-                if (m.id !== drone.clientId) {
-                    createPeerConnection(m.id, true);
-                }
+        // EVENT: Initial List
+        room.on('members', m => {
+            currentMembers = m;
+            renderUserList();
+            currentMembers.forEach(m => {
+                if (m.id !== drone.clientId) createPeerConnection(m.id, true);
             });
         });
 
+        // EVENT: Someone joins
         room.on('member_join', member => {
-            console.log("Member joined:", member.clientData.name);
-            updateUI(room.members);
+            currentMembers.push(member);
+            renderUserList();
         });
 
-        room.on('member_leave', member => {
-            updateUI(room.members);
-            if (pcPeers[member.id]) {
-                pcPeers[member.id].close();
-                delete pcPeers[member.id];
+        // EVENT: Someone leaves
+        room.on('member_leave', ({id}) => {
+            const index = currentMembers.findIndex(m => m.id === id);
+            if (index > -1) currentMembers.splice(index, 1);
+            if (pcPeers[id]) {
+                pcPeers[id].close();
+                delete pcPeers[id];
             }
+            renderUserList();
         });
 
+        // EVENT: WebRTC Signaling
         room.on('data', (data, member) => {
             if (member.id === drone.clientId) return;
             handleSignaling(data, member.id);
@@ -84,93 +87,78 @@ function startComms(username) {
     });
 }
 
-function updateUI(members) {
+// 3. UI RENDERING (The fix for your "Not Updating" issue)
+function renderUserList() {
     const list = document.getElementById('member-list');
-    list.innerHTML = members.map(m => `
+    const status = document.getElementById('connection-status');
+    
+    status.innerText = `${currentMembers.length} OPERATIVES ONLINE`;
+    
+    list.innerHTML = currentMembers.map(m => `
         <div class="member-item" id="user-${m.id}">
             <span class="member-dot"></span> 
-            ${m.clientData.name} ${m.id === drone.clientId ? '(YOU)' : ''}
+            ${m.clientData.name} ${m.id === drone.clientId ? '<span class="you-tag">(YOU)</span>' : ''}
         </div>
     `).join('');
-    document.getElementById('connection-status').innerText = `${members.length} OPERATIVES ACTIVE`;
 }
 
-// --- 3. WebRTC SIGNALING ---
-function createPeerConnection(peerId, isOfferer) {
-    const pc = new RTCPeerConnection(configuration);
-    pcPeers[peerId] = pc;
-
-    pc.onicecandidate = event => {
-        if (event.candidate) {
-            drone.publish({ room: 'observable-moonlight-voice', message: { candidate: event.candidate, to: peerId } });
-        }
-    };
-
-    pc.ontrack = event => {
-        const remoteAudio = new Audio();
-        remoteAudio.srcObject = event.streams[0];
-        remoteAudio.autoplay = true;
-    };
-
-    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-
-    if (isOfferer) {
-        pc.createOffer().then(offer => {
-            pc.setLocalDescription(offer);
-            drone.publish({ room: 'observable-moonlight-voice', message: { sdp: offer, to: peerId } });
-        });
-    }
-}
-
-function handleSignaling(data, fromId) {
-    if (data.to && data.to !== drone.clientId) return;
-
-    let pc = pcPeers[fromId] || createPeerConnection(fromId, false);
-
-    if (data.sdp) {
-        pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
-            if (pc.remoteDescription.type === 'offer') {
-                pc.createAnswer().then(answer => {
-                    pc.setLocalDescription(answer);
-                    drone.publish({ room: 'observable-moonlight-voice', message: { sdp: answer, to: fromId } });
-                });
-            }
-        });
-    } else if (data.candidate) {
-        pc.addIceCandidate(new RTCIceCandidate(data.candidate));
-    }
-}
-
-// --- 4. MIC & VOICE ACTIVITY ---
+// 4. WebRTC & MIC TOGGLE
 window.toggleMic = () => {
     const track = localStream.getAudioTracks()[0];
     track.enabled = !track.enabled;
     const btn = document.getElementById('mic-btn');
     btn.innerText = track.enabled ? "MIC: ON" : "MIC: OFF";
-    btn.classList.toggle('active', track.enabled);
+    btn.style.background = track.enabled ? "#fff" : "transparent";
+    btn.style.color = track.enabled ? "#000" : "#fff";
 };
 
-function setupVoiceActivity(stream) {
-    const audioContext = new AudioContext();
-    const analyser = audioContext.createAnalyser();
-    const source = audioContext.createMediaStreamSource(stream);
-    source.connect(analyser);
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    function checkVolume() {
-        analyser.getByteFrequencyData(dataArray);
-        let values = 0;
-        for (let i = 0; i < bufferLength; i++) { values += dataArray[i]; }
-        const average = values / bufferLength;
-
-        const myDot = document.querySelector(`#user-${drone.clientId} .member-dot`);
-        if (myDot) {
-            myDot.style.boxShadow = average > 30 ? "0 0 15px #00ff00" : "0 0 5px #fff";
-            myDot.style.background = average > 30 ? "#00ff00" : "#fff";
-        }
-        requestAnimationFrame(checkVolume);
+// WebRTC Signaling Logic (Shortened for brevity - same as before)
+function createPeerConnection(peerId, isOfferer) {
+    const pc = new RTCPeerConnection(configuration);
+    pcPeers[peerId] = pc;
+    pc.onicecandidate = e => {
+        if (e.candidate) drone.publish({ room: 'observable-moonlight-voice', message: { candidate: e.candidate, to: peerId } });
+    };
+    pc.ontrack = e => {
+        const audio = new Audio();
+        audio.srcObject = e.streams[0];
+        audio.autoplay = true;
+    };
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+    if (isOfferer) {
+        pc.createOffer().then(d => { pc.setLocalDescription(d); drone.publish({ room: 'observable-moonlight-voice', message: { sdp: d, to: peerId } }); });
     }
-    checkVolume();
+    return pc;
+}
+
+function handleSignaling(data, fromId) {
+    if (data.to && data.to !== drone.clientId) return;
+    let pc = pcPeers[fromId] || createPeerConnection(fromId, false);
+    if (data.sdp) {
+        pc.setRemoteDescription(new RTCSessionDescription(data.sdp)).then(() => {
+            if (pc.remoteDescription.type === 'offer') {
+                pc.createAnswer().then(a => { pc.setLocalDescription(a); drone.publish({ room: 'observable-moonlight-voice', message: { sdp: a, to: fromId } }); });
+            }
+        });
+    } else if (data.candidate) pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+}
+
+// Voice Activity Visualizer
+function setupVoiceActivity(stream) {
+    const ctx = new AudioContext();
+    const analyzer = ctx.createAnalyser();
+    const src = ctx.createMediaStreamSource(stream);
+    src.connect(analyzer);
+    const data = new Uint8Array(analyzer.frequencyBinCount);
+    function update() {
+        analyzer.getByteFrequencyData(data);
+        const vol = data.reduce((a, b) => a + b) / data.length;
+        const dot = document.querySelector(`#user-${drone.clientId} .member-dot`);
+        if (dot && localStream.getAudioTracks()[0].enabled) {
+            dot.style.background = vol > 10 ? "#00ff00" : "#fff";
+            dot.style.boxShadow = vol > 10 ? "0 0 15px #00ff00" : "none";
+        }
+        requestAnimationFrame(update);
+    }
+    update();
 }
