@@ -143,5 +143,36 @@
             document.body.appendChild(script);
         })();
     </script>
+
+	  <script>
+  // This function nukes all the saved data
+  function clearGameData() {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log("Memory wiped. Everything is fresh.");
+    } catch (e) {
+      console.log("Couldn't clear data, maybe cookies are blocked?");
+    }
+  }
+
+  // 1. Clear data immediately when the game starts up
+  window.onload = function() {
+    clearGameData();
+  };
+
+  // 2. Clear data right when the user closes the tab or refreshes
+  window.onbeforeunload = function() {
+    clearGameData();
+  };
+
+  // 3. Just in case it's a "Single Page App," clear on visibility change
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === 'hidden') {
+      clearGameData();
+    }
+  });
+</script>
   </body>
+
 </html>
