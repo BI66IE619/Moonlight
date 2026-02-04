@@ -1,0 +1,46 @@
+/**
+ * Moonlight System Initialization
+ * Handles the simulated boot sequence and pre-loader removal.
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    const statusText = document.getElementById('boot-status');
+    const progressFill = document.getElementById('progress-fill');
+    const loaderWrapper = document.getElementById('loader-wrapper');
+
+    const bootSequences = [
+        { text: "INITIALIZING KERNEL...", delay: 500, progress: 20 },
+        { text: "CONNECTING TO RELAY...", delay: 800, progress: 45 },
+        { text: "DECRYPTING ASSETS...", delay: 600, progress: 70 },
+        { text: "CALIBRATING STARFIELD...", delay: 900, progress: 90 },
+        { text: "SYSTEMS OPTIMAL.", delay: 400, progress: 100 }
+    ];
+
+    let currentStep = 0;
+
+    function runBootSequence() {
+        if (currentStep < bootSequences.length) {
+            const step = bootSequences[currentStep];
+            
+            statusText.innerText = step.text;
+            progressFill.style.width = `${step.progress}%`;
+
+            setTimeout(() => {
+                currentStep++;
+                runBootSequence();
+            }, step.delay);
+        } else {
+            // Exit sequence
+            setTimeout(() => {
+                loaderWrapper.style.opacity = '0';
+                loaderWrapper.style.visibility = 'hidden';
+                
+                // Optional: Dispatch event to let other scripts know we are ready
+                window.dispatchEvent(new Event('systemReady'));
+            }, 500);
+        }
+    }
+
+    // Start the boot sequence
+    runBootSequence();
+});
