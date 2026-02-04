@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Terraria Web Port Instructions</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * { box-sizing: border-box; }
+
+    html,body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Press Start 2P', cursive;
+      background: #071012;
+      color: #dfffdc;
+    }
+
+    #bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.95;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .board {
+      width: min(1100px, 95%);
+      height: 90vh;
+      background: linear-gradient(180deg, #6b3f1f 0%, #5a3519 40%, #4c2b14 100%);
+      border: 6px solid #2c1709;
+      border-radius: 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6), inset 0 3px 0 rgba(255,255,255,0.02);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #9cff9c;
+      text-align: center;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .slat {
+      flex: 1;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,0.04) 0px,
+          rgba(0,0,0,0.04) 4px,
+          rgba(255,255,255,0.015) 4px,
+          rgba(255,255,255,0.015) 8px
+        ),
+        linear-gradient(180deg, #d1a26b 0%, #a76f3f 40%, #8b5b36 100%);
+      border: 3px solid #3f230f;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 4px 0;
+      color: #fff;
+      line-height: 1.45;
+      font-size: 10px;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.4);
+      position: relative;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeInUp 0.7s forwards;
+    }
+
+    .slat::before, .slat::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #e9d6b7, #4a341f 60%);
+      position: absolute;
+      top: 6px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+    }
+    .slat::before { left: 8px; }
+    .slat::after  { right: 8px; }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      margin-top: 6px;
+      text-align: center;
+      color: #b6ffb6;
+      font-size: 9px;
+      text-shadow: 1px 1px 2px #000;
+    }
+  </style>
+</head>
+<body>
+  <img id="bg" src="https://files.catbox.moe/7udwxm.png" alt="Terraria background">
+
+  <div class="page">
+    <div class="board" role="document" aria-label="Terraria instructions">
+
+      <h1>HOW TO PLAY (its not as easy as you think)</h1>
+
+      <div class="steps">
+        <div class="slat"><span>ㅤㅤStep 1️⃣: So once you click the "Launch Terrarai Web Port" button, 2 tabs will open. There will be a drive link (Content.zip - Google Drive) tab and the main game tab (Terrariun).</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 2️⃣: Your going to first download the Content.zip folder from the drive link and your gonna extract it.</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 3️⃣: Next, your gonna go to the Terraria game tab and your gonna click "Copy local assets".</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 4️⃣: Then your gonna click "Select Terraria Content directory" and choose the "Content" folder you extracted earlier.</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 5️⃣: Next your gonna wait for the green bar to load and then once its loading, it may or may not show something similar to "game not playing".</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 6️⃣: So if you do end up seeing this, click the "Play" button on the top right corner.</span></div>
+
+        <div class="slat"><span>ㅤㅤStep 7️⃣: Then lastly, wait for the game to load and play fullscreen (which is reccommended) and enjoy!</span></div>
+      </div>
+
+      <footer>© Re-Logic Fan Port • For educational use only</footer>
+    </div>
+  </div>
+
+  <script>
+    // stagger animation
+    const slats = document.querySelectorAll('.slat');
+    slats.forEach((s,i) => s.style.animationDelay = `${i * 0.25}s`);
+  </script>
+</body>
+</html>
