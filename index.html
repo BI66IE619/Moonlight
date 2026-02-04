@@ -3,24 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight | Initializing</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Moonlight | Initialization</title>
+    
+    <link rel="stylesheet" href="loading.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="loading-body">
-    <canvas id="starfield"></canvas>
-    <div class="loader-wrap">
-        <div class="moon-loader">
-            <div class="orbit"></div>
-        </div>
-        <div class="loading-info">
-            <h1 class="glitch-text" data-text="MOONLIGHT">MOONLIGHT</h1>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
-            <p class="status">ESTABLISHING CONNECTION...</p>
+<body style="background: #000; margin: 0; overflow: hidden;">
+
+    <div id="loader-wrapper">
+        <div class="loader-content">
+            <div class="logo-animation">
+                M
+                <div class="scan-line"></div>
+            </div>
+            <div class="boot-text">
+                <p id="boot-status">BOOTING...</p>
+                <div class="progress-container">
+                    <div id="progress-fill"></div>
+                </div>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
-    <script>
-        setTimeout(() => { document.body.style.opacity = '0'; setTimeout(() => window.location.href = 'main.html', 500); }, 3500);
-    </script>
+
+    <script src="loading.js"></script>
 </body>
 </html>
