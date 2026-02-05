@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Moonlight | Proxy</title>
+    <title>Moonlight | Proxy Hub</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="proxy.css">
 </head>
@@ -12,23 +12,28 @@
     <div class="ui-wrapper">
         <nav class="top-nav">
             <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+            
+            <div class="proxy-selector">
+                <button class="node-btn active" onclick="switchNode(1, this)">NODE_01: INTEL</button>
+                <button class="node-btn" onclick="switchNode(2, this)">NODE_02: MATH_VM</button>
+            </div>
+
             <div class="nav-links">
                 <span onclick="toggleFullscreen()" style="cursor:pointer; margin-right: 20px;">[ FULLSCREEN ]</span>
-                <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
-                <span class="nav-status">SYSTEMS: OPTIMAL</span>
+                <span class="nav-status">TUNNEL: <span id="active-node-name">INTEL_EDU</span></span>
             </div>
         </nav>
 
         <div class="window-container">
             <div class="window-header">
-                <div class="dot-red"></div>
-                <span class="window-title">SECURE_TUNNEL // INTEL_EDU</span>
+                <div class="status-indicator"></div>
+                <span class="window-title">SECURE_TUNNEL // ENCRYPTED_FEED</span>
             </div>
             
             <div class="iframe-wrapper">
                 <div id="loading-overlay">
                     <div class="spinner"></div>
-                    <p>ESTABLISHING ENCRYPTED LINK...</p>
+                    <p id="load-text">ESTABLISHING ENCRYPTED LINK...</p>
                 </div>
                 <iframe id="proxy-frame" sandbox="allow-forms allow-scripts allow-same-origin allow-popups"></iframe>
             </div>
@@ -37,32 +42,51 @@
 
     <script src="script.js"></script>
     <script>
-        // Fullscreen Logic
+        // Obfuscated Links
+        const nodes = {
+            1: "https://intelleducation.netlify.app/",
+            2: "https://vm.mathfilm.dk/"
+        };
+
+        const frame = document.getElementById('proxy-frame');
+        const overlay = document.getElementById('loading-overlay');
+        const nodeNameDisplay = document.getElementById('active-node-name');
+
+        function switchNode(id, btn) {
+            // UI Updates
+            document.querySelectorAll('.node-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Trigger Loading Effect
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '1';
+            nodeNameDisplay.innerText = id === 1 ? "INTEL_EDU" : "MATH_VM";
+
+            // Inject Source
+            setTimeout(() => {
+                frame.src = nodes[id];
+            }, 500);
+        }
+
+        // Hide overlay when iframe finishes loading
+        frame.onload = () => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
+        };
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
             }
         }
 
-        // Secure Injection Logic
-        (function() {
-            const frame = document.getElementById('proxy-frame');
-            const overlay = document.getElementById('loading-overlay');
-            const target = "https://intelleducation.netlify.app/";
+        // Initialize with Node 1
+        window.onload = () => switchNode(1, document.querySelector('.node-btn'));
 
-            setTimeout(() => {
-                frame.src = target;
-                // Hide loading overlay once frame starts responding
-                frame.onload = () => {
-                    overlay.style.opacity = '0';
-                    setTimeout(() => overlay.style.display = 'none', 500);
-                };
-            }, 1000);
-        })();
+        // Prevent Right-Click to hide "Inspect Frame"
+        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
