@@ -80,34 +80,56 @@
 
 .proxy-selector {
     display: flex;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.6); /* Darker background for contrast */
+    padding: 8px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Thicker, brighter border */
+    border-radius: 8px;
+    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.05);
 }
 
 .node-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
     font-family: 'Syncopate', sans-serif;
-    font-size: 0.5rem;
-    padding: 8px 15px;
+    font-size: 0.65rem; /* Slightly larger text */
+    font-weight: 700;
+    padding: 10px 20px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    letter-spacing: 1px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    letter-spacing: 2px;
+    border-radius: 4px;
+    text-transform: uppercase;
 }
 
-.node-btn.active {
-    background: #fff;
-    color: #000;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
+/* Hover State - Makes it clear they are clickable */
 .node-btn:hover:not(.active) {
     color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Active State - High contrast "Selected" look */
+.node-btn.active {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+    transform: translateY(0);
+}
+
+/* Small Indicator Dot inside the button */
+.node-btn::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: currentColor;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
 .status-indicator {
