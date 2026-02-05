@@ -87,6 +87,35 @@
 
         // Prevent Right-Click to hide "Inspect Frame"
         document.addEventListener('contextmenu', e => e.preventDefault());
+
+        function switchNode(id, btn) {
+    const frameContainer = document.querySelector('.window-container');
+    
+    // 1. Remove active class from all buttons
+    document.querySelectorAll('.node-btn').forEach(b => {
+        b.classList.remove('active', 'flicker-active');
+    });
+
+    // 2. Apply Flicker to the new button and the window
+    btn.classList.add('active', 'flicker-active');
+    frameContainer.classList.add('flicker-active');
+
+    // 3. Show Loading Overlay
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
+    nodeNameDisplay.innerText = id === 1 ? "INTEL_EDU" : "MATH_VM";
+
+    // 4. Swap the Source
+    setTimeout(() => {
+        frame.src = nodes[id];
+        
+        // Remove flicker class so it can be re-triggered later
+        setTimeout(() => {
+            frameContainer.classList.remove('flicker-active');
+            btn.classList.remove('flicker-active');
+        }, 400);
+    }, 300);
+}
     </script>
 </body>
 </html>
