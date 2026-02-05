@@ -66,3 +66,28 @@
     50% { opacity: 1; }
     100% { top: 105%; opacity: 0; }
 }
+
+/* The Mechanical Flicker Animation */
+@keyframes relay-flicker {
+    0% { opacity: 0.1; filter: brightness(2); }
+    10% { opacity: 0.8; filter: brightness(1); }
+    20% { opacity: 0.2; }
+    30% { opacity: 1; filter: contrast(1.5); }
+    40% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 1; }
+}
+
+/* Apply this class via JavaScript */
+.flicker-active {
+    animation: relay-flicker 0.4s steps(2) forwards;
+}
+
+/* Enhanced Button Hover/Active */
+.node-btn.active {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+    transition: all 0.1s ease;
+}
