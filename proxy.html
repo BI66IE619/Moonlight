@@ -51,80 +51,63 @@
 
     <script src="script.js"></script>
     <script>
-        // Obfuscated Links
-        const nodes = {
-            1: "https://intelleducation.netlify.app/",
-            2: "https://vm.mathfilm.dk/"
-        };
-
-        const frame = document.getElementById('proxy-frame');
-        const overlay = document.getElementById('loading-overlay');
-        const nodeNameDisplay = document.getElementById('active-node-name');
-
-        function switchNode(id, btn) {
-            // UI Updates
-            document.querySelectorAll('.node-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Trigger Loading Effect
-            overlay.style.display = 'flex';
-            overlay.style.opacity = '1';
-            nodeNameDisplay.innerText = id === 1 ? "NEBULO" : "MATH";
-
-            // Inject Source
-            setTimeout(() => {
-                frame.src = nodes[id];
-            }, 500);
-        }
-
-        // Hide overlay when iframe finishes loading
-        frame.onload = () => {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 500);
-        };
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
-
-        // Initialize with Node 1
-        window.onload = () => switchNode(1, document.querySelector('.node-btn'));
-
-        // Prevent Right-Click to hide "Inspect Frame"
-        document.addEventListener('contextmenu', e => e.preventDefault());
-
-        function switchNode(id, btn) {
-    const frameContainer = document.querySelector('.window-container');
+        document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('dropdown-trigger');
+    const menu = document.getElementById('proxy-menu');
     
-    // 1. Remove active class from all buttons
-    document.querySelectorAll('.node-btn').forEach(b => {
-        b.classList.remove('active', 'flicker-active');
+    // Define your proxy links here
+    const nodes = {
+        1: "https://intelleducation.netlify.app/",
+        2: "https://vm.mathfilm.dk/",
+        3: "https://your-proxy-3.com", 
+        4: "https://your-proxy-4.com"
+    };
+
+    // 1. CLICK TO OPEN/CLOSE
+    trigger.onclick = function(e) {
+        e.stopPropagation(); // Prevents the window click from closing it immediately
+        
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            menu.style.display = "block";
+        }
+    };
+
+    // 2. ITEM SELECTION
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.onclick = function() {
+            const id = this.getAttribute('data-id');
+            const name = this.getAttribute('data-name');
+            const frame = document.getElementById('proxy-frame');
+            const label = document.getElementById('current-node-label');
+            const statusLabel = document.getElementById('active-node-name');
+            const overlay = document.getElementById('loading-overlay');
+
+            // Update UI Labels
+            if(label) label.innerText = name;
+            if(statusLabel) statusLabel.innerText = name;
+            
+            // Close Menu
+            menu.style.display = "none";
+
+            // Trigger Loading & Swap Source
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.opacity = '1';
+            }
+
+            setTimeout(() => {
+                if (frame) frame.src = nodes[id];
+            }, 300);
+        };
     });
 
-    // 2. Apply Flicker to the new button and the window
-    btn.classList.add('active', 'flicker-active');
-    frameContainer.classList.add('flicker-active');
-
-    // 3. Show Loading Overlay
-    overlay.style.display = 'flex';
-    overlay.style.opacity = '1';
-    nodeNameDisplay.innerText = id === 1 ? "INTEL_EDU" : "MATH_VM";
-
-    // 4. Swap the Source
-    setTimeout(() => {
-        frame.src = nodes[id];
-        
-        // Remove flicker class so it can be re-triggered later
-        setTimeout(() => {
-            frameContainer.classList.remove('flicker-active');
-            btn.classList.remove('flicker-active');
-        }, 400);
-    }, 300);
-}
+    // 3. CLOSE IF CLICKING OUTSIDE
+    window.onclick = function() {
+        menu.style.display = "none";
+    };
+});
     </script>
 </body>
 </html>
