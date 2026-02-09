@@ -142,7 +142,7 @@
     box-shadow: 0 0 8px #00ff00;
 }
 
-/* --- DROP-DOWN VISIBILITY OVERRIDE --- */
+/* --- PROXY SELECTOR HUB (STRICT BOX OUTLINE) --- */
 
 /* 1. Ensure the nav stays on top of the iframe */
 .top-nav {
@@ -150,27 +150,53 @@
     z-index: 10000 !important;
 }
 
-/* 2. The main container for the dropdown */
+/* 2. Main Dropdown Container with Box Outline */
 .node-dropdown {
     position: relative;
+    min-width: 220px;
     z-index: 10001 !important;
+    padding: 2px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Outer secondary border */
+    border-radius: 4px;
 }
 
-/* 3. The actual menu that drops down */
+/* 3. The Trigger Box Outline */
+.dropdown-trigger {
+    background: #000;
+    border: 1px solid #ffffff; /* Main high-contrast box outline */
+    padding: 8px 15px;
+    color: #fff;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 2px;
+}
+
+.dropdown-trigger:hover {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* 4. The Dropdown Content Menu */
 .dropdown-content {
-    display: none; /* JavaScript toggles this to 'block' */
+    display: none; /* Toggled by JS */
     position: absolute;
-    top: 100%; 
+    top: calc(100% + 10px); 
     left: 0;
-    width: 240px; /* Slightly wider for better text fit */
+    width: 100%;
     background: #000000;
-    border: 1px solid #ffffff; /* Contrast border */
-    z-index: 99999 !important; /* Absolute highest priority */
-    margin-top: 10px;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.1);
+    border: 1px solid #ffffff; /* Box outline for the menu itself */
+    z-index: 99999 !important;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 1);
 }
 
-/* 4. Individual items */
+/* 5. Item Styling */
 .dropdown-item {
     padding: 12px 15px;
     background: #000;
@@ -181,12 +207,16 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.dropdown-item:hover {
-    background: #fff !important;
-    color: #000 !important;
+.dropdown-item:last-child {
+    border-bottom: none;
 }
 
-/* 5. Keep the window container underneath */
+.dropdown-item:hover {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* 6. Lower Layer for Proxy Window */
 .window-container {
     position: relative;
     z-index: 1;
