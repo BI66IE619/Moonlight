@@ -141,89 +141,52 @@
     box-shadow: 0 0 8px #00ff00;
 }
 
-/* --- PROXY SELECTOR DROPDOWN --- */
+/* --- DROP-DOWN VISIBILITY OVERRIDE --- */
 
-.node-dropdown {
+/* 1. Ensure the nav stays on top of the iframe */
+.top-nav {
     position: relative;
-    min-width: 220px;
-    z-index: 9999; /* Ensures it stays above the iframe container */
+    z-index: 10000 !important;
 }
 
-.dropdown-trigger {
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 8px 15px;
+/* 2. The main container for the dropdown */
+.node-dropdown {
+    position: relative;
+    z-index: 10001 !important;
+}
+
+/* 3. The actual menu that drops down */
+.dropdown-content {
+    display: none; /* JavaScript toggles this to 'block' */
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    width: 240px; /* Slightly wider for better text fit */
+    background: #000000;
+    border: 1px solid #ffffff; /* Contrast border */
+    z-index: 99999 !important; /* Absolute highest priority */
+    margin-top: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 1), 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* 4. Individual items */
+.dropdown-item {
+    padding: 12px 15px;
+    background: #000;
     color: #fff;
     font-family: 'Syncopate', sans-serif;
     font-size: 0.6rem;
-    letter-spacing: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-}
-
-.dropdown-trigger:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-.dropdown-content {
-    position: absolute;
-    top: calc(100% + 8px); /* Sits exactly below the trigger */
-    left: 0;
-    width: 100%;
-    background: #000;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    display: none; /* Controlled by JavaScript */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.dropdown-item {
-    padding: 12px 15px;
-    color: rgba(255, 255, 255, 0.5);
-    font-family: 'Syncopate', sans-serif;
-    font-size: 0.55rem;
-    cursor: pointer;
-    transition: all 0.2s;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: #000;
-}
-
-.dropdown-item:last-child {
-    border-bottom: none;
 }
 
 .dropdown-item:hover {
-    background: #fff;
-    color: #000;
-    padding-left: 20px; /* Tactical slide effect */
+    background: #fff !important;
+    color: #000 !important;
 }
 
-/* Status Elements */
-.status-dot {
-    width: 6px;
-    height: 6px;
-    background: #00ff00;
-    border-radius: 50%;
-    margin-right: 12px;
-    box-shadow: 0 0 10px #00ff00;
-    display: inline-block;
-}
-
-.arrow {
-    font-size: 0.5rem;
-    opacity: 0.5;
-    margin-left: 10px;
-}
-
-/* --- PREVENT IFRAME OVERLAP --- */
+/* 5. Keep the window container underneath */
 .window-container {
     position: relative;
-    z-index: 1; /* Keep the proxy window on a lower layer than the nav */
+    z-index: 1;
 }
