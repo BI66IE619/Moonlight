@@ -54,8 +54,9 @@
         document.addEventListener('DOMContentLoaded', () => {
     const trigger = document.getElementById('dropdown-trigger');
     const menu = document.getElementById('proxy-menu');
+    const frame = document.getElementById('proxy-frame');
+    const overlay = document.getElementById('loading-overlay');
     
-    // Define your proxy links here
     const nodes = {
         1: "https://intelleducation.netlify.app/",
         2: "https://vm.mathfilm.dk/",
@@ -65,13 +66,8 @@
 
     // 1. CLICK TO OPEN/CLOSE
     trigger.onclick = function(e) {
-        e.stopPropagation(); // Prevents the window click from closing it immediately
-        
-        if (menu.style.display === "block") {
-            menu.style.display = "none";
-        } else {
-            menu.style.display = "block";
-        }
+        e.stopPropagation();
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
     };
 
     // 2. ITEM SELECTION
@@ -79,31 +75,41 @@
         item.onclick = function() {
             const id = this.getAttribute('data-id');
             const name = this.getAttribute('data-name');
-            const frame = document.getElementById('proxy-frame');
-            const label = document.getElementById('current-node-label');
-            const statusLabel = document.getElementById('active-node-name');
-            const overlay = document.getElementById('loading-overlay');
-
-            // Update UI Labels
-            if(label) label.innerText = name;
-            if(statusLabel) statusLabel.innerText = name;
             
-            // Close Menu
+            // Update UI Labels
+            document.getElementById('current-node-label').innerText = name;
+            document.getElementById('active-node-name').innerText = name;
             menu.style.display = "none";
 
-            // Trigger Loading & Swap Source
-            if (overlay) {
-                overlay.style.display = 'flex';
-                overlay.style.opacity = '1';
-            }
+            // Show Loading Screen
+            overlay.style.display = 'flex';
+            overlay.style.opacity = '1';
 
+            // Change Source
+            frame.src = nodes[id];
+
+            // SAFETY FALLBACK: If it doesn't load in 5s, hide overlay anyway
             setTimeout(() => {
-                if (frame) frame.src = nodes[id];
-            }, 300);
+                if(overlay.style.display === 'flex') {
+                    hideOverlay();
+                }
+            }, 5000);
         };
     });
 
-    // 3. CLOSE IF CLICKING OUTSIDE
+    // 3. HIDE OVERLAY WHEN LOADED
+    frame.onload = function() {
+        hideOverlay();
+    };
+
+    function hideOverlay() {
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 500);
+    }
+
+    // CLOSE MENU ON OUTSIDE CLICK
     window.onclick = function() {
         menu.style.display = "none";
     };
