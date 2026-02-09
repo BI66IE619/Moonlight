@@ -14,18 +14,18 @@
     <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
     
     <div class="node-dropdown">
-        <div class="dropdown-trigger" onclick="toggleDropdown()">
-            <span class="status-dot"></span>
-            <span id="current-node-label">SELECT_NODE</span>
-            <span class="arrow">▼</span>
-        </div>
-        <div class="dropdown-content" id="proxy-menu">
-            <div class="dropdown-item" onclick="selectNode(1, 'INTEL_EDU')">NODE_01: INTEL_EDU</div>
-            <div class="dropdown-item" onclick="selectNode(2, 'MATH_VM')">NODE_02: MATH_VM</div>
-            <div class="dropdown-item" onclick="selectNode(3, 'PROXY_3')">NODE_03: NEW_HUB</div>
-            <div class="dropdown-item" onclick="selectNode(4, 'PROXY_4')">NODE_04: ALT_LINK</div>
-        </div>
+    <div class="dropdown-trigger" id="dropdown-trigger">
+        <span class="status-dot"></span>
+        <span id="current-node-label">SELECT_NODE</span>
+        <span class="arrow">▼</span>
     </div>
+    <div class="dropdown-content" id="proxy-menu">
+        <div class="dropdown-item" data-id="1" data-name="INTEL_EDU">NODE_01: INTEL_EDU</div>
+        <div class="dropdown-item" data-id="2" data-name="MATH_VM">NODE_02: MATH_VM</div>
+        <div class="dropdown-item" data-id="3" data-name="NODE_03">NODE_03: [NEW_PROXY]</div>
+        <div class="dropdown-item" data-id="4" data-name="NODE_04">NODE_04: [NEW_PROXY]</div>
+    </div>
+</div>
 
     <div class="nav-links">
         <span onclick="toggleFullscreen()" style="cursor:pointer; margin-right: 20px;">[ FULLSCREEN ]</span>
