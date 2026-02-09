@@ -11,18 +11,27 @@
 
     <div class="ui-wrapper">
         <nav class="top-nav">
-            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
-            
-            <div class="proxy-selector">
-                <button class="node-btn active" onclick="switchNode(1, this)">PROXY_01</button>
-                <button class="node-btn" onclick="switchNode(2, this)">PROXY_02</button>
-            </div>
+    <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+    
+    <div class="node-dropdown">
+        <div class="dropdown-trigger" onclick="toggleDropdown()">
+            <span class="status-dot"></span>
+            <span id="current-node-label">SELECT_NODE</span>
+            <span class="arrow">▼</span>
+        </div>
+        <div class="dropdown-content" id="proxy-menu">
+            <div class="dropdown-item" onclick="selectNode(1, 'INTEL_EDU')">NODE_01: INTEL_EDU</div>
+            <div class="dropdown-item" onclick="selectNode(2, 'MATH_VM')">NODE_02: MATH_VM</div>
+            <div class="dropdown-item" onclick="selectNode(3, 'PROXY_3')">NODE_03: NEW_HUB</div>
+            <div class="dropdown-item" onclick="selectNode(4, 'PROXY_4')">NODE_04: ALT_LINK</div>
+        </div>
+    </div>
 
-            <div class="nav-links">
-                <span onclick="toggleFullscreen()" style="cursor:pointer; margin-right: 20px;">[ FULLSCREEN ]</span>
-                <span class="nav-status">TUNNEL: <span id="active-node-name">INTEL_EDU</span></span>
-            </div>
-        </nav>
+    <div class="nav-links">
+        <span onclick="toggleFullscreen()" style="cursor:pointer; margin-right: 20px;">[ FULLSCREEN ]</span>
+        <span class="nav-status">TUNNEL: <span id="active-node-name">STANDBY</span></span>
+    </div>
+</nav>
 
         <div class="window-container">
             <div class="window-header">
