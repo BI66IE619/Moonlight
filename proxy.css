@@ -141,27 +141,89 @@
     box-shadow: 0 0 8px #00ff00;
 }
 
-/* Ensure the container can hold the absolute menu */
+/* --- PROXY SELECTOR DROPDOWN --- */
+
 .node-dropdown {
     position: relative;
-    z-index: 2000; /* Higher than the window-container */
+    min-width: 220px;
+    z-index: 9999; /* Ensures it stays above the iframe container */
+}
+
+.dropdown-trigger {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    color: #fff;
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.dropdown-trigger:hover {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .dropdown-content {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px); /* Sits exactly below the trigger */
     left: 0;
-    width: 220px;
+    width: 100%;
     background: #000;
     border: 1px solid rgba(255, 255, 255, 0.3);
-    display: none; /* JS toggles this to 'block' */
-    margin-top: 5px;
-    box-shadow: 0 10px 40px rgba(0,0,0,1);
-    z-index: 9999; /* Absolute top priority */
+    display: none; /* Controlled by JavaScript */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-/* Make sure the iframe container doesn't overlap the menu */
+.dropdown-item {
+    padding: 12px 15px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Syncopate', sans-serif;
+    font-size: 0.55rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: #000;
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #fff;
+    color: #000;
+    padding-left: 20px; /* Tactical slide effect */
+}
+
+/* Status Elements */
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background: #00ff00;
+    border-radius: 50%;
+    margin-right: 12px;
+    box-shadow: 0 0 10px #00ff00;
+    display: inline-block;
+}
+
+.arrow {
+    font-size: 0.5rem;
+    opacity: 0.5;
+    margin-left: 10px;
+}
+
+/* --- PREVENT IFRAME OVERLAP --- */
 .window-container {
     position: relative;
-    z-index: 1; 
+    z-index: 1; /* Keep the proxy window on a lower layer than the nav */
 }
