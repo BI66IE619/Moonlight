@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://3nbf4.com/act/files/tag.min.js?z=10623181" data-cfasync="false" async></script>
+    <script src="https://3nbf4.com/act/files/tag.min.js?z=10614351" data-cfasync="false" async></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title id="siteTitle">Moonlight Movies</title>
+    <link id="siteIcon" rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon">
+    
+    <script src="https://3nbf4.com/act/files/tag.min.js?z=10614351" data-cfasync="false" async></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        :root { --bg: #0a0a0a; --surface: #111; --text: #fff; --grid-line: rgba(255,255,255,.05); --transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 50px 50px; color: var(--text); overflow-x: hidden; }
+        
+        header { position: fixed; top: 0; width: 100%; height: 70px; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 1000; border-bottom: 1px solid var(--grid-line); }
+        .logo { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+        
+        .nav-tools { display: flex; gap: 20px; align-items: center; }
+        .settings-icon { cursor: pointer; opacity: 0.6; transition: 0.2s; font-size: 20px; }
+        .settings-icon:hover { opacity: 1; }
+
+        .search-wrapper { padding: 100px 5% 20px; }
+        .search-box { background: var(--surface); border: 1px solid var(--grid-line); border-radius: 4px; padding: 12px; max-width: 600px; }
+        .search-box input { width: 100%; background: none; border: none; color: white; outline: none; font-size: 16px; }
+
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; padding: 20px 5% 50px; }
+        .card { background: var(--surface); border: 1px solid var(--grid-line); border-radius: 8px; overflow: hidden; transition: var(--transition); cursor: pointer; position: relative; aspect-ratio: 2/3; }
+        .card:hover { transform: translateY(-10px); border-color: #fff; z-index: 10; }
+        .card img { width: 100%; height: 100%; object-fit: cover; }
+        .card-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 15px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); opacity: 0; transition: var(--transition); }
+        .card:hover .card-info { opacity: 1; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(10px); }
+        .modal.active { display: flex; }
+        .modal-content { width: 95%; max-width: 600px; position: relative; background: #000; border: 1px solid var(--grid-line); border-radius: 12px; overflow: hidden; padding: 40px; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #fff; cursor: pointer; font-weight: 900; z-index: 100; font-size: 24px; }
+
+        .settings-item { margin-bottom: 30px; border-bottom: 1px solid #222; padding-bottom: 20px; }
+        .settings-item h3 { margin-bottom: 10px; font-size: 14px; text-transform: uppercase; color: #666; }
+        
+        .btn { background: #fff; color: #000; padding: 12px 25px; font-weight: 700; border: none; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid #444; margin-right: 10px; }
+        
+        iframe { width: 100%; aspect-ratio: 16/9; border: none; background: #000; }
+        .tv-ui { text-align: center; }
+        select { background: #1a1a1a; color: white; border: 1px solid #333; padding: 10px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Moonlight - Movies Browser</div>
+        <div class="nav-tools">
+            <div class="settings-icon" onclick="openModal('settingsModal')">⚙️ Settings</div>
+        </div>
+    </header>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search the vault..." oninput="handleSearch()">
+        </div>
+    </div>
+
+    <main id="library" class="library-grid"></main>
+
+    <div id="pagination" style="text-align:center; padding: 40px;">
+        <button class="btn" onclick="fetchNextBatch()">Load More</button>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('settingsModal')">✕</div>
+            <h2 style="margin-bottom: 30px;">Settings</h2>
+            
+            <div class="settings-item">
+                <h3>Tab Cloak (Stealth Mode)</h3>
+                <button class="btn btn-outline" onclick="cloakTab('Google Drive', 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png')">Drive Mode</button>
+                <button class="btn btn-outline" onclick="cloakTab('Google', 'https://www.google.com/favicon.ico')">Google Mode</button>
+                <button class="btn" onclick="cloakTab('NikeStream', 'https://securly.pages.dev/favicon.png')">Reset</button>
+            </div>
+
+            <div class="settings-item">
+                <h3>Legal & DMCA</h3>
+                <p style="font-size: 13px; color: #888; margin-bottom: 15px;">NikeStream is a search engine for third-party media. We do not host any files.</p>
+                <button class="btn" onclick="window.location.href='https://securly.pages.dev/dmca.html'">Send DMCA Request</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tvModal" class="modal"><div class="modal-content"><div class="close-btn" onclick="closeModal('tvModal')">✕</div><div class="tv-ui"><h2 id="tvDisplayTitle" style="margin-bottom:20px;"></h2><div style="display:flex; gap:10px; justify-content:center; margin-bottom:20px;"><select id="seasonSelect" onchange="fetchEpisodes()"></select><select id="episodeSelect"></select></div><button id="finalPlayBtn" class="btn">Play Now</button></div></div></div>
+    <div id="playerModal" class="modal"><div class="modal-content"><div class="close-btn" onclick="closePlayer()">✕</div><div style="background:#111; padding:10px; border-bottom:1px solid #333;"><select id="serverSelect" onchange="loadPlayer()"><option value="https://vidsrc.xyz/embed/">Server 1</option><option value="https://embed.su/embed/">Server 2</option></select></div><iframe id="videoFrame" src="" allowfullscreen></iframe></div></div>
+
+    <script>
+        const API_KEY = '3a73619bbb8fc6d47742d1b5b2b707b5';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+        const BLACKLISTED_IDS = ['']; 
+
+        let currentPage = 1, currentTVId = null, isSearching = false, searchTimeout = null, currentMedia = {};
+
+        function cloakTab(title, favicon) {
+            document.title = title;
+            document.getElementById('siteIcon').href = favicon;
+            localStorage.setItem('cloakTitle', title);
+            localStorage.setItem('cloakIcon', favicon);
+        }
+
+        async function fetchNextBatch() {
+            if (isSearching) return;
+            for (let i = 0; i < 5; i++) {
+                const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&page=${currentPage}`);
+                const data = await res.json();
+                renderItems(data.results, false);
+                currentPage++;
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            clearTimeout(searchTimeout);
+            if (!query) { isSearching = false; document.getElementById('library').innerHTML = ""; currentPage = 1; fetchNextBatch(); return; }
+            searchTimeout = setTimeout(async () => {
+                isSearching = true;
+                const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                renderItems(data.results, true);
+            }, 500);
+        }
+
+        function renderItems(items, clear) {
+            const container = document.getElementById('library');
+            if (clear) container.innerHTML = "";
+            items.forEach(item => {
+                if (BLACKLISTED_IDS.includes(item.id.toString())) return;
+                if (!item.poster_path || item.media_type === 'person') return;
+                const isTV = item.media_type === 'tv' || (!item.title && item.name);
+                const title = item.title || item.name;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<img src="${IMG_URL}${item.poster_path}" loading="lazy"><div class="card-info"><div>${title}</div></div>`;
+                card.onclick = () => isTV ? openTVUI(item.id, title) : launchVideo('movie', item.id);
+                container.appendChild(card);
+            });
+        }
+
+        async function openTVUI(id, title) {
+            currentTVId = id;
+            document.getElementById('tvDisplayTitle').innerText = title;
+            const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+            const data = await res.json();
+            document.getElementById('seasonSelect').innerHTML = data.seasons.filter(s => s.season_number > 0).map(s => `<option value="${s.season_number}">${s.name}</option>`).join('');
+            await fetchEpisodes();
+            openModal('tvModal');
+        }
+
+        async function fetchEpisodes() {
+            const sNum = document.getElementById('seasonSelect').value;
+            const res = await fetch(`${BASE_URL}/tv/${currentTVId}/season/${sNum}?api_key=${API_KEY}`);
+            const data = await res.json();
+            const eSelect = document.getElementById('episodeSelect');
+            eSelect.innerHTML = data.episodes.map(e => `<option value="${e.episode_number}">Ep ${e.episode_number}</option>`).join('');
+            document.getElementById('finalPlayBtn').onclick = () => { launchVideo('tv', currentTVId, sNum, eSelect.value); closeModal('tvModal'); };
+        }
+
+        function launchVideo(type, id, s = '', e = '') {
+            currentMedia = { type, id, s, e };
+            loadPlayer();
+            openModal('playerModal');
+        }
+
+        function loadPlayer() {
+            const server = document.getElementById('serverSelect').value;
+            const { type, id, s, e } = currentMedia;
+            document.getElementById('videoFrame').src = type === 'movie' ? `${server}movie/${id}` : `${server}tv/${id}/${s}/${e}`;
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
+        function closePlayer() { document.getElementById('videoFrame').src = ""; closeModal('playerModal'); }
+
+        window.onload = () => {
+            fetchNextBatch();
+            const savedTitle = localStorage.getItem('cloakTitle');
+            const savedIcon = localStorage.getItem('cloakIcon');
+            if (savedTitle) document.title = savedTitle;
+            if (savedIcon) document.getElementById('siteIcon').href = savedIcon;
+        };
+    </script>
+</body>
+</html>
