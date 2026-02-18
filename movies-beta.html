@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title id="siteTitle">Moonlight | Movies</title>
+    <link id="siteIcon" rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { 
+            --bg: #000; 
+            --accent: #ffffff;
+            --surface: rgba(255, 255, 255, 0.05); 
+            --border: rgba(255, 255, 255, 0.2);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg); 
+            color: #fff; 
+            overflow-x: hidden; 
+        }
+
+        /* Starfield Canvas Background */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+        }
+
+        /* Tactical Header */
+        header { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            height: 70px; 
+            background: rgba(0, 0, 0, 0.8); 
+            backdrop-filter: blur(15px); 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 5%; 
+            z-index: 1000; 
+            border-bottom: 1px solid var(--border); 
+        }
+
+        .logo { 
+            font-family: 'Syncopate', sans-serif;
+            font-size: 14px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+        }
+        
+        .nav-tools { display: flex; gap: 20px; align-items: center; }
+        .settings-btn { 
+            cursor: pointer; 
+            font-family: 'Syncopate', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            border: 1px solid var(--border);
+            padding: 8px 15px;
+            transition: var(--transition);
+        }
+        .settings-btn:hover { background: #fff; color: #000; }
+
+        /* Moonlight Search Box (Box Outline Style) */
+        .search-wrapper { padding: 120px 5% 20px; display: flex; justify-content: center; }
+        .search-box { 
+            background: rgba(0,0,0,0.6); 
+            border: 1px solid #fff; 
+            padding: 15px 25px; 
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        }
+        .search-box input { 
+            width: 100%; 
+            background: none; 
+            border: none; 
+            color: white; 
+            outline: none; 
+            font-family: 'Syncopate', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        /* Movie Grid */
+        .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 40px 5% 50px; }
+        
+        .card { 
+            background: #000; 
+            border: 1px solid var(--border); 
+            overflow: hidden; 
+            transition: var(--transition); 
+            cursor: pointer; 
+            position: relative; 
+            aspect-ratio: 2/3; 
+        }
+        .card:hover { 
+            transform: scale(1.02); 
+            border-color: #fff; 
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+        }
+        .card img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: var(--transition); }
+        .card:hover img { opacity: 1; }
+        
+        .card-info { 
+            position: absolute; 
+            bottom: 0; left: 0; right: 0; 
+            padding: 20px; 
+            background: linear-gradient(transparent, #000); 
+            font-family: 'Syncopate', sans-serif;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Modals (Moonlight Glass style) */
+        .modal { 
+            position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.9); 
+            display: none; justify-content: center; align-items: center; 
+            z-index: 2000; backdrop-filter: blur(10px); 
+        }
+        .modal.active { display: flex; }
+        .modal-content { 
+            width: 90%; max-width: 700px; 
+            background: #000; 
+            border: 1px solid #fff; 
+            padding: 50px; 
+            position: relative;
+        }
+        
+        .close-btn { position: absolute; top: 20px; right: 20px; cursor: pointer; font-family: 'Syncopate', sans-serif; font-size: 12px; }
+
+        /* Typography & Buttons */
+        h2 { font-family: 'Syncopate', sans-serif; font-size: 18px; letter-spacing: 4px; margin-bottom: 20px; text-transform: uppercase; }
+        .btn { 
+            background: #fff; color: #000; padding: 12px 25px; 
+            font-family: 'Syncopate', sans-serif; font-size: 10px; 
+            border: none; cursor: pointer; transition: var(--transition); 
+        }
+        .btn:hover { background: #ccc; }
+        .btn-outline { background: transparent; color: #fff; border: 1px solid var(--border); margin: 5px; }
+        .btn-outline:hover { border-color: #fff; }
+
+        select { 
+            background: #000; color: white; border: 1px solid var(--border); 
+            padding: 10px; font-family: 'Syncopate', sans-serif; font-size: 9px;
+            cursor: pointer; outline: none;
+        }
+        
+        iframe { width: 100%; aspect-ratio: 16/9; border: 1px solid var(--border); background: #000; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <header>
+        <div class="logo">M // MOVIES</div>
+        <div class="nav-tools">
+            <div class="settings-btn" onclick="openModal('settingsModal')">[ SETTINGS ]</div>
+        </div>
+    </header>
+
+    <div class="search-wrapper">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="SEARCH_THE_VAULT..." oninput="handleSearch()">
+        </div>
+    </div>
+
+    <main id="library" class="library-grid"></main>
+
+    <div id="pagination" style="text-align:center; padding-bottom: 100px;">
+        <button class="btn" onclick="fetchNextBatch()">LOAD_MORE_DATA</button>
+    </div>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('settingsModal')">[ CLOSE ]</div>
+            <h2>SETTINGS</h2>
+            
+            <div style="margin-bottom: 40px;">
+                <h3 style="font-family: 'Syncopate'; font-size: 10px; color: #666; margin-bottom: 15px;">TAB_CLOAKING</h3>
+                <button class="btn btn-outline" onclick="cloakTab('Google Drive', 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png')">DRIVE_MODE</button>
+                <button class="btn btn-outline" onclick="cloakTab('Google', 'https://www.google.com/favicon.ico')">GOOGLE_MODE</button>
+                <button class="btn" onclick="cloakTab('Moonlight Movies', '')">RESET_UI</button>
+            </div>
+
+            <div>
+                <h3 style="font-family: 'Syncopate'; font-size: 10px; color: #666; margin-bottom: 15px;">SYSTEM_INFO</h3>
+                <p style="font-size: 12px; color: #888; line-height: 1.6;">Moonlight is a neural interface for third-party stream indexing. We do not host any media files on our internal servers.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="tvModal" class="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('tvModal')">[ CLOSE ]</div>
+            <h2 id="tvDisplayTitle"></h2>
+            <div style="display:flex; gap:15px; margin-bottom:20px;">
+                <select id="seasonSelect" onchange="fetchEpisodes()"></select>
+                <select id="episodeSelect"></select>
+            </div>
+            <button id="finalPlayBtn" class="btn">INITIALIZE_STREAM</button>
+        </div>
+    </div>
+
+    <div id="playerModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="close-btn" onclick="closePlayer()">[ DISCONNECT ]</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin:0;">STREAM_FEED</h2>
+                <select id="serverSelect" onchange="loadPlayer()">
+                    <option value="https://vidsrc.xyz/embed/">NODE_ALPHA (vidsrc)</option>
+                    <option value="https://embed.su/embed/">NODE_BETA (embed.su)</option>
+                </select>
+            </div>
+            <iframe id="videoFrame" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        // --- STARFIELD LOGIC ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 200; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * 0.05
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                star.y -= star.speed;
+                if (star.y < 0) star.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', initStars);
+        initStars();
+        drawStars();
+
+        // --- MOVIE API LOGIC ---
+        const API_KEY = '3a73619bbb8fc6d47742d1b5b2b707b5';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+
+        let currentPage = 1, currentTVId = null, isSearching = false, searchTimeout = null, currentMedia = {};
+
+        async function fetchNextBatch() {
+            if (isSearching) return;
+            const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&page=${currentPage}`);
+            const data = await res.json();
+            renderItems(data.results, false);
+            currentPage++;
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            clearTimeout(searchTimeout);
+            if (!query) { isSearching = false; document.getElementById('library').innerHTML = ""; currentPage = 1; fetchNextBatch(); return; }
+            searchTimeout = setTimeout(async () => {
+                isSearching = true;
+                const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                renderItems(data.results, true);
+            }, 500);
+        }
+
+        function renderItems(items, clear) {
+            const container = document.getElementById('library');
+            if (clear) container.innerHTML = "";
+            items.forEach(item => {
+                if (!item.poster_path || item.media_type === 'person') return;
+                const isTV = item.media_type === 'tv' || (!item.title && item.name);
+                const title = item.title || item.name;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<img src="${IMG_URL}${item.poster_path}" loading="lazy"><div class="card-info"><div>${title}</div></div>`;
+                card.onclick = () => isTV ? openTVUI(item.id, title) : launchVideo('movie', item.id);
+                container.appendChild(card);
+            });
+        }
+
+        async function openTVUI(id, title) {
+            currentTVId = id;
+            document.getElementById('tvDisplayTitle').innerText = title;
+            const res = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}`);
+            const data = await res.json();
+            document.getElementById('seasonSelect').innerHTML = data.seasons.filter(s => s.season_number > 0).map(s => `<option value="${s.season_number}">SEASON ${s.season_number}</option>`).join('');
+            await fetchEpisodes();
+            openModal('tvModal');
+        }
+
+        async function fetchEpisodes() {
+            const sNum = document.getElementById('seasonSelect').value;
+            const res = await fetch(`${BASE_URL}/tv/${currentTVId}/season/${sNum}?api_key=${API_KEY}`);
+            const data = await res.json();
+            const eSelect = document.getElementById('episodeSelect');
+            eSelect.innerHTML = data.episodes.map(e => `<option value="${e.episode_number}">EPISODE ${e.episode_number}</option>`).join('');
+            document.getElementById('finalPlayBtn').onclick = () => { launchVideo('tv', currentTVId, sNum, eSelect.value); closeModal('tvModal'); };
+        }
+
+        function launchVideo(type, id, s = '', e = '') {
+            currentMedia = { type, id, s, e };
+            loadPlayer();
+            openModal('playerModal');
+        }
+
+        function loadPlayer() {
+            const server = document.getElementById('serverSelect').value;
+            const { type, id, s, e } = currentMedia;
+            document.getElementById('videoFrame').src = type === 'movie' ? `${server}movie/${id}` : `${server}tv/${id}/${s}/${e}`;
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.body.style.overflow = 'hidden'; }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.body.style.overflow = 'auto'; }
+        function closePlayer() { document.getElementById('videoFrame').src = ""; closeModal('playerModal'); }
+
+        window.onload = () => {
+            fetchNextBatch();
+            const savedTitle = localStorage.getItem('cloakTitle');
+            const savedIcon = localStorage.getItem('cloakIcon');
+            if (savedTitle) document.title = savedTitle;
+            if (savedIcon) document.getElementById('siteIcon').href = savedIcon;
+        };
+
+        function cloakTab(title, favicon) {
+            document.title = title;
+            document.getElementById('siteIcon').href = favicon;
+            localStorage.setItem('cloakTitle', title);
+            localStorage.setItem('cloakIcon', favicon);
+        }
+    </script>
+</body>
+</html>
