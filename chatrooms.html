@@ -323,120 +323,142 @@
     </script>
 
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-      import { getDatabase, ref, push, onChildAdded, off, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded, off, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyCTUq6Hye-l6Lh2ylHQ4yOM-HUWODGgMtY",
-        authDomain: "chatty-boi-c876e.firebaseapp.com",
-        databaseURL: "https://chatty-boi-c876e-default-rtdb.firebaseio.com",
-        projectId: "chatty-boi-c876e",
-        storageBucket: "chatty-boi-c876e.firebasestorage.app",
-        messagingSenderId: "1073159135051",
-        appId: "1:1073159135051:web:8c991df26ea3c1eb84d2ce",
-        measurementId: "G-03QWMK5ZNM"
-      };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCTUq6Hye-l6Lh2ylHQ4yOM-HUWODGgMtY",
+    authDomain: "chatty-boi-c876e.firebaseapp.com",
+    databaseURL: "https://chatty-boi-c876e-default-rtdb.firebaseio.com",
+    projectId: "chatty-boi-c876e",
+    storageBucket: "chatty-boi-c876e.firebasestorage.app",
+    messagingSenderId: "1073159135051",
+    appId: "1:1073159135051:web:8c991df26ea3c1eb84d2ce",
+    measurementId: "G-03QWMK5ZNM"
+  };
 
-      const OWNER_IDS = ["6528690208", "4084803237", "0376780508", "0635354315", "0071913330"];
-      const app = initializeApp(firebaseConfig, "chatApp");
-      const db = getDatabase(app);
+  const OWNER_IDS = ["6528690208", "4084803237", "0376780508", "0635354315", "0071913330"];
+  const app = initializeApp(firebaseConfig, "chatApp");
+  const db = getDatabase(app);
 
-      const messagesEl = document.getElementById('messages');
-      const msgInput = document.getElementById('msgInput');
-      const sendBtn = document.getElementById('sendBtn');
-      const charCounter = document.getElementById('charCounter');
-      const roomTitle = document.getElementById('roomTitle');
-      const nameModal = document.getElementById('nameModal');
-      const nameInput = document.getElementById('nameInput');
-      const nameSubmit = document.getElementById('nameSubmit');
-      const publicRoomBtn = document.getElementById('publicRoomBtn');
-      const createRoomBtn = document.getElementById('createRoomBtn');
-      const joinRoomBtn = document.getElementById('joinRoomBtn');
-      const joinedRoomsEl = document.getElementById('joinedRooms');
+  const messagesEl = document.getElementById('messages');
+  const msgInput = document.getElementById('msgInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const roomTitle = document.getElementById('roomTitle');
+  const nameModal = document.getElementById('nameModal');
+  const nameInput = document.getElementById('nameInput');
+  const nameSubmit = document.getElementById('nameSubmit');
+  const publicRoomBtn = document.getElementById('publicRoomBtn');
+  const createRoomBtn = document.getElementById('createRoomBtn');
+  const joinRoomBtn = document.getElementById('joinRoomBtn');
+  const joinedRoomsEl = document.getElementById('joinedRooms');
 
-      let myID = window.currentUserID || localStorage.getItem("numericUserID");
-      let username = "Anonymous";
-      let currentRoom = "public";
-      let currentListener = null;
-      let violationCount = 0;
-      const MAX_VIOLATIONS = 3;
-      const MAX_CHARS = 600;
-      let lastMessageTime = 0;
-      const MESSAGE_COOLDOWN = 5000;
+  let myID = window.currentUserID || localStorage.getItem("numericUserID");
+  let username = "Anonymous";
+  let currentRoom = "public";
+  let currentListenerRef = null;
+  let joinedRooms = new Set(['public']);
 
-      const profanityPatterns = [/n+[i1!|]+[gq9]+[e3a@]+r+/gi, /f+u+c+k+/gi, /s+h+i+t+/gi, /b+i+t+c+h+/gi];
+  // --- CORE FUNCTIONS ---
 
-      function containsProfanity(text) {
-        return profanityPatterns.some(pattern => pattern.test(text));
-      }
+  function escapeHtml(s){ return (s+'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+  function isOwner(id) { return OWNER_IDS.includes(id); }
 
-      function showWarning(message) {
-        const toast = document.createElement('div');
-        toast.className = 'warning-toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-      }
+  function appendMessage(payload){
+    const div = document.createElement('div');
+    const isMe = payload.id === myID;
+    const ownerClass = isOwner(payload.id) ? ' owner-msg' : '';
+    div.className = 'msg' + (isMe ? ' own' : '') + ownerClass;
+    
+    const displayName = (payload.name && payload.id) ? `${payload.name} (${payload.id})` : (payload.name || `Anon (${payload.id})`);
+    const ownerBadge = isOwner(payload.id) ? '<span class="owner-badge">V.I.P</span>' : '';
+    const nameClass = isOwner(payload.id) ? 'msg-name owner' : 'msg-name';
+    
+    div.innerHTML = `<div class="${nameClass}">${escapeHtml(displayName)} ${ownerBadge}</div>
+                     <div class="msg-bubble">${escapeHtml(payload.text)}</div>`;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
 
-      function escapeHtml(s){ return (s+'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
-      function isOwner(id) { return OWNER_IDS.includes(id); }
+  function loadMessages(room){
+    if(currentListenerRef) off(currentListenerRef);
+    messagesEl.innerHTML = `<div style="text-align:center;color:#444;font-family:'Syncopate';font-size:8px;margin-bottom:10px;">ENCRYPTED_CHANNEL: ${room.toUpperCase()}</div>`;
+    
+    const messagesRef = ref(db, "messages/" + room);
+    currentListenerRef = messagesRef;
+    const limitedQuery = query(messagesRef, limitToLast(100));
+    onChildAdded(limitedQuery, snap => appendMessage(snap.val()));
+  }
 
-      function appendMessage(payload){
-        const div = document.createElement('div');
-        const ownerClass = isOwner(payload.id) ? ' owner-msg' : '';
-        div.className = 'msg' + ((payload.id === myID) ? ' own' : '') + ownerClass;
-        
-        const displayName = (payload.name && payload.id) ? `${payload.name} (${payload.id})` : (payload.name || `Anon (${payload.id || 'unknown'})`);
-        const ownerBadge = isOwner(payload.id) ? '<span class="owner-badge">V.I.P</span>' : '';
-        const nameClass = isOwner(payload.id) ? 'msg-name owner' : 'msg-name';
-        
-        div.innerHTML = `<div class="${nameClass}">${escapeHtml(displayName)} ${ownerBadge}</div>
-                         <div class="msg-bubble">${escapeHtml(payload.text)}</div>`;
-        messagesEl.appendChild(div);
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      }
-
-      function loadMessages(room){
-        if(currentListener) off(currentListener);
-        messagesEl.innerHTML='';
-        const messagesRef = ref(db, "messages/" + room);
-        const limitedQuery = query(messagesRef, limitToLast(100));
-        onChildAdded(limitedQuery, snap => appendMessage(snap.val()));
-      }
-
-      async function sendMessage(){
-        const txt = msgInput.value.trim();
-        if(!txt) return;
-        if (containsProfanity(txt)) { await handleViolation(); return; }
-        
-        const messagePayload = {name: username, id: myID, text: txt, timestamp: Date.now()};
-        push(ref(db, "messages/" + currentRoom), messagePayload);
-        msgInput.value = '';
-      }
-
-      async function handleViolation() {
-        violationCount++;
-        if (violationCount >= MAX_VIOLATIONS) {
-            const bannedRef = window.banDatabase.ref("bannedIDs");
-            const snapshot = await bannedRef.get();
-            let bannedIDs = snapshot.val() || [];
-            bannedIDs.push(myID);
-            await bannedRef.set(bannedIDs);
-            location.reload();
-        } else {
-            showWarning(`Violation ${violationCount}/${MAX_VIOLATIONS}`);
-        }
-      }
-
-      sendBtn.addEventListener('click', sendMessage);
-      msgInput.addEventListener('keypress', e=>{ if(e.key==='Enter') sendMessage(); });
-      nameSubmit.addEventListener('click', () => {
-        username = nameInput.value.trim() || "Anonymous";
-        nameModal.remove();
-        loadMessages(currentRoom);
+  function switchRoom(room){
+    currentRoom = room;
+    roomTitle.innerText = room === 'public' ? 'GLOBAL_FEED' : room.toUpperCase();
+    loadMessages(currentRoom);
+    
+    // Update active states in UI
+    document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+    if(room === 'public') {
+      publicRoomBtn.classList.add('active');
+    } else {
+      Array.from(joinedRoomsEl.children).forEach(el => {
+        if(el.innerText.includes(room.toUpperCase())) el.classList.add('active');
       });
-      
-      publicRoomBtn.addEventListener('click', () => { currentRoom = "public"; loadMessages("public"); });
-    </script>
+    }
+  }
+
+  function refreshJoinedRoomsUI(){
+    joinedRoomsEl.innerHTML = '';
+    joinedRooms.forEach(room => {
+      if(room === 'public') return;
+      const div = document.createElement('div');
+      div.className = 'sidebar-item';
+      div.innerText = `📡 ${room.toUpperCase()}`;
+      div.onclick = () => switchRoom(room);
+      joinedRoomsEl.appendChild(div);
+    });
+  }
+
+  // --- EVENT LISTENERS ---
+
+  sendBtn.onclick = () => {
+    const txt = msgInput.value.trim();
+    if(!txt) return;
+    push(ref(db, "messages/" + currentRoom), {
+      name: username,
+      id: myID,
+      text: txt,
+      timestamp: Date.now()
+    });
+    msgInput.value = '';
+  };
+
+  msgInput.onkeypress = (e) => { if(e.key === 'Enter') sendBtn.click(); };
+
+  nameSubmit.onclick = () => {
+    username = nameInput.value.trim() || "Anonymous";
+    nameModal.style.display = 'none';
+    loadMessages(currentRoom);
+  };
+
+  publicRoomBtn.onclick = () => switchRoom('public');
+
+  createRoomBtn.onclick = () => {
+    const room = prompt("ENTER_NEW_CHANNEL_ID:")?.trim().toLowerCase();
+    if(room && !joinedRooms.has(room)){
+      joinedRooms.add(room);
+      refreshJoinedRoomsUI();
+      switchRoom(room);
+    }
+  };
+
+  joinRoomBtn.onclick = () => {
+    const room = prompt("ENTER_TARGET_FREQUENCY:")?.trim().toLowerCase();
+    if(room && !joinedRooms.has(room)){
+      joinedRooms.add(room);
+      refreshJoinedRoomsUI();
+      switchRoom(room);
+    }
+  };
+</script>
 </body>
 </html>
