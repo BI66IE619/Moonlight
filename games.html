@@ -2183,14 +2183,13 @@
         if (!target) return;
 
         const href = target.getAttribute('href');
-        const protectedPages = ['main.html', 'games.html', 'chat.html', 'index.html'];
+        const protectedPages = ['main.html', 'games.html', 'chat.html', 'index.html', 'player.html'];
         
-        // If it's a game in your current folder (/g/)
+        // If it's a link to your games folder or a standalone game file
         if (href && href.endsWith('.html') && !protectedPages.includes(href)) {
             e.preventDefault();
-            // We go UP to the root to find player.html, 
-            // but tell player to look INSIDE /g/ for the game
-            window.location.href = `../player.html?game=g/${href}`;
+            // Since player.html and games.html are in the same root folder:
+            window.location.href = `player.html?game=${href}`;
         }
     });
 </script>
