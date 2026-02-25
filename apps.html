@@ -98,5 +98,30 @@
     // Initial count on page load
     window.addEventListener('DOMContentLoaded', updateCounter);
 </script>
+    <script>
+    (function() {
+        // Detect if the page is being viewed outside of the about:blank iframe
+        if (window.self === window.top) {
+            // Immediately replace the page content with the error UI
+            document.documentElement.innerHTML = `
+                <head>
+                    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+                </head>
+                <body style="background:#050505; color:#ff3333; font-family:'Syncopate', sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; margin:0; overflow:hidden;">
+                    <div style="border: 1px solid #ff3333; padding: 40px; background: rgba(255,0,0,0.05); text-align:center;">
+                        <h1 style="letter-spacing:12px; font-size: 18px; margin:0;">SECURE_TUNNEL_BREACHED</h1>
+                        <div style="width: 100%; height: 1px; background: #ff3333; margin: 20px 0; opacity: 0.3;"></div>
+                        <p style="color:#666; font-size:9px; letter-spacing:4px; margin:0;">CONNECTION_LEAK_DETECTED // REDIRECTING...</p>
+                    </div>
+                </body>
+            `;
+
+            // Wait 1.5 seconds so they see the error, then boot them to the gateway
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+    })();
+</script>
 </body>
 </html>
