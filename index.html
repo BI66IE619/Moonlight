@@ -4,27 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moonlight | Initialization</title>
-    <link rel="stylesheet" href="loading.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body style="background: #000; margin: 0; overflow: hidden;">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --font-tactical: 'Syncopate', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
 
-    <div id="loader-wrapper">
-        <div class="loader-content">
-            <div class="logo-animation">
-                <img src="https://files.catbox.moe/ms1zil.png" alt="Moonlight Logo" class="loader-logo">
-                <div class="scan-line"></div>
+        body, html {
+            background: var(--bg);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: var(--font-tactical);
+            color: #fff;
+        }
+
+        /* Perspective wrapper for the slide effect */
+        #stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- Section 1: Loader --- */
+        #loader-wrapper {
+            position: absolute;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.8s ease;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .loader-logo { width: 120px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+        
+        .progress-container {
+            width: 250px; height: 2px; background: rgba(255,255,255,0.1);
+            margin: 20px auto; overflow: hidden;
+        }
+        #progress-fill { width: 0%; height: 100%; background: #fff; transition: width 0.3s ease; }
+        #boot-status { font-size: 8px; letter-spacing: 4px; color: #444; text-transform: uppercase; }
+
+        /* --- Section 2: Gateway (Hidden initially to the right) --- */
+        #gateway-wrapper {
+            position: absolute;
+            transform: translateX(100px); /* Offset to the right */
+            opacity: 0;
+            transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.8s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .terminal-box {
+            width: 450px;
+            padding: 50px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        .terminal-box::before {
+            content: "ID: MNLGHT-Q000";
+            position: absolute; top: -12px; left: 20px;
+            font-size: 9px; color: #555; background: var(--bg); padding: 0 10px;
+        }
+
+        .title { font-size: 24px; letter-spacing: 12px; margin-bottom: 5px; text-align: center; }
+        .subtitle { font-size: 8px; letter-spacing: 5px; color: #333; text-align: center; margin-bottom: 40px; }
+
+        .btn-container { border: 1px solid var(--border); padding: 15px; margin-bottom: 25px; cursor: pointer; transition: 0.3s; }
+        .btn-container:hover { border-color: #fff; background: rgba(255,255,255,0.02); }
+        .btn-text { font-size: 10px; letter-spacing: 4px; text-align: center; color: #666; }
+
+        .log-area { font-family: var(--font-mono); font-size: 9px; color: #333; line-height: 1.8; border-top: 1px solid var(--border); padding-top: 20px; }
+
+        /* --- Animation States --- */
+        .slide-out { transform: translateX(-100px) !important; opacity: 0 !important; pointer-events: none; }
+        .slide-in { transform: translateX(0) !important; opacity: 1 !important; pointer-events: auto !important; }
+    </style>
+</head>
+<body>
+
+    <div id="stage">
+        <div id="loader-wrapper">
+            <img src="https://files.catbox.moe/ms1zil.png" alt="Moonlight Logo" class="loader-logo">
+            <div class="progress-container">
+                <div id="progress-fill"></div>
             </div>
-            
-            <div class="boot-text">
-                <p id="boot-status">BOOTING...</p>
-                <div class="progress-container">
-                    <div id="progress-fill"></div>
+            <p id="boot-status">INITIALIZING...</p>
+        </div>
+
+        <div id="gateway-wrapper">
+            <div class="terminal-box">
+                <div class="title">MOONLIGHT</div>
+                <div class="subtitle">ENCRYPTED_GATEWAY</div>
+
+                <div class="btn-container" onclick="finalLaunch()">
+                    <div class="btn-text" id="launch-btn-text">INITIALIZE_SESSION</div>
+                </div>
+
+                <div class="log-area" id="terminal-logs">
+                    > INI:IA1ZZNG KERNEL... <span style="float:right">20</span><br>
+                    > COMNNECIIEG TO RELAY... <span style="float:right">45</span><br>
+                    > DECREPYZING ASSETS... <span style="float:right">70</span><br>
+                    > CALABRAIIEN_STARFIELD... <span style="float:right">90</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="loading.js"></script>
+    <script>
+        const bootSequences = [
+            { text: "INITIALIZING KERNEL...", delay: 400, progress: 20 },
+            { text: "CONNECTING TO RELAY...", delay: 600, progress: 45 },
+            { text: "DECRYPTING ASSETS...", delay: 500, progress: 70 },
+            { text: "CALIBRATING STARFIELD...", delay: 700, progress: 90 },
+            { text: "SYSTEMS OPTIMAL.", delay: 300, progress: 100 }
+        ];
+
+        let currentStep = 0;
+
+        function runBoot() {
+            const statusText = document.getElementById('boot-status');
+            const progressFill = document.getElementById('progress-fill');
+
+            if (currentStep < bootSequences.length) {
+                const step = bootSequences[currentStep];
+                statusText.innerText = step.text;
+                progressFill.style.width = `${step.progress}%`;
+
+                setTimeout(() => {
+                    currentStep++;
+                    runBoot();
+                }, step.delay);
+            } else {
+                // Trigger the sweet transition
+                setTimeout(transitionToGateway, 600);
+            }
+        }
+
+        function transitionToGateway() {
+            document.getElementById('loader-wrapper').classList.add('slide-out');
+            document.getElementById('gateway-wrapper').classList.add('slide-in');
+        }
+
+        function finalLaunch() {
+            const btnText = document.getElementById('launch-btn-text');
+            btnText.innerText = "OPENING_SECURE_TAB...";
+            
+            const mainUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/main.html";
+            
+            const win = window.open();
+            if (win) {
+                win.document.title = "Google Docs";
+                win.document.body.style.margin = "0";
+                win.document.body.style.overflow = "hidden";
+                const iframe = win.document.createElement('iframe');
+                iframe.style.width = "100%"; iframe.style.height = "100vh"; iframe.style.border = "none";
+                iframe.src = mainUrl;
+                win.document.body.appendChild(iframe);
+                
+                // Stay on this page (Gateway) as requested
+                btnText.innerText = "SESSION_ACTIVE";
+            } else {
+                alert("Please allow popups.");
+            }
+        }
+
+        window.onload = runBoot;
+    </script>
 </body>
 </html>
