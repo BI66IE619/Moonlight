@@ -2177,5 +2177,27 @@
     // Initial count on page load
     window.addEventListener('DOMContentLoaded', updateCounter);
 </script>
+    <script>
+    // Universal Router for the Player Loader
+    function routeToPlayer(e) {
+        // Find the closest link or element with an href
+        const target = e.target.closest('a');
+        if (!target) return;
+
+        const href = target.getAttribute('href');
+        
+        // Filter out main menu pages and non-html links
+        const protectedPages = ['main.html', 'games.html', 'chat.html', 'index.html'];
+        
+        if (href && href.endsWith('.html') && !protectedPages.includes(href)) {
+            e.preventDefault();
+            window.location.href = `player.html?game=${href}`;
+        }
+    }
+
+    // Listen for clicks on the entire document (Event Delegation)
+    // This works even if you add new games or filter them!
+    document.addEventListener('click', routeToPlayer);
+</script>
 </body>
 </html>
