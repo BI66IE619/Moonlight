@@ -2,104 +2,167 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Moonlight | Terminal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlight | Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #000;
+            --accent: #ffffff;
+            --font-tactical: 'Syncopate', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: #000;
+            background-color: var(--bg);
             color: #fff;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Syncopate', sans-serif;
+            font-family: var(--font-tactical);
             overflow: hidden;
-            margin: 0;
         }
 
-        .launch-box {
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 60px;
-            background: rgba(255,255,255,0.02);
-            backdrop-filter: blur(10px);
+            z-index: 10;
         }
 
-        h1 { font-size: 14px; letter-spacing: 5px; margin-bottom: 30px; color: #444; }
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 12px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
 
-        .btn {
+        .subtitle {
+            font-size: 8px;
+            letter-spacing: 4px;
+            color: #444;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .launch-btn {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 15px 45px;
+            font-family: var(--font-tactical);
+            font-size: 10px;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .launch-btn:hover {
             background: #fff;
             color: #000;
-            border: none;
-            padding: 15px 40px;
-            font-family: 'Syncopate', sans-serif;
-            font-size: 10px;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-text {
+            position: fixed;
+            bottom: 30px;
+            font-size: 7px;
+            color: #222;
             letter-spacing: 2px;
-            cursor: pointer;
-            transition: 0.3s;
         }
-
-        .btn:hover {
-            background: #888;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-
-        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
     </style>
 </head>
 <body>
-    <canvas id="stars"></canvas>
-    
-    <div class="launch-box">
-        <h1>ACCESS_RESTRICTED</h1>
-        <button class="btn" onclick="launch('chat.html')">INITIALIZE_CONNECTION</button>
+
+    <canvas id="starfield"></canvas>
+
+    <div class="container">
+        <div class="title">MOONLIGHT</div>
+        <div class="subtitle">NEURAL_INTERFACE_READY</div>
+        <button class="launch-btn" onclick="initiateLaunch()">[ INITIALIZE_START ]</button>
     </div>
 
+    <div class="footer-text">SECURE_TUNNEL_ESTABLISHED // 2026</div>
+
     <script>
-        function launch(url) {
-            // 1. Create the new about:blank window
-            var win = window.open();
+        // Starfield Animation
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.2,
+                    speed: Math.random() * 0.05
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                star.y -= star.speed;
+                if (star.y < 0) star.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', initStars);
+        initStars();
+        drawStars();
+
+        // The about:blank Injector
+        function initiateLaunch() {
+            const url = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/main.html";
+            
+            // 1. Open new tab
+            const win = window.open();
             if (!win) {
-                alert("Please allow popups for this site!");
+                alert("POPUP_BLOCKED: Please allow popups to launch Moonlight.");
                 return;
             }
 
-            // 2. Set the window's style to remove margins
-            win.document.body.style.margin = '0';
-            win.document.body.style.height = '100vh';
+            // 2. Setup the about:blank document
+            win.document.title = "Google Drive"; // Subtle decoy title
+            win.document.body.style.margin = "0";
+            win.document.body.style.height = "100vh";
+            win.document.body.style.overflow = "hidden";
 
-            // 3. Create an iframe that fills the entire screen
-            var iframe = win.document.createElement('iframe');
-            iframe.style.border = 'none';
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.margin = '0';
-            iframe.src = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/" + url;
+            // 3. Create the stealth iframe
+            const iframe = win.document.createElement('iframe');
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.style.margin = "0";
+            iframe.style.padding = "0";
+            iframe.src = url;
 
-            // 4. Inject it
+            // 4. Inject and Disguise original tab
             win.document.body.appendChild(iframe);
-            
-            // 5. Optional: Close the launcher or redirect it to Google
-            window.location.replace("https://google.com");
+            window.location.replace("https://www.google.com"); 
         }
-
-        // Simple Starfield Background
-        const canvas = document.getElementById('stars');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        let s = [];
-        for(let i=0; i<100; i++) s.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1});
-        function draw() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle="#fff";
-            s.forEach(p => {
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
-                p.y -= 0.2; if(p.y < 0) p.y = canvas.height;
-            });
-            requestAnimationFrame(draw);
-        }
-        draw();
     </script>
 </body>
 </html>
