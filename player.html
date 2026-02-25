@@ -45,13 +45,17 @@
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const gameToLoad = urlParams.get('game');
-        if (gameToLoad) {
-            // Because player.html is in root, it can load 'g/game.html' directly
-            document.getElementById('game-frame').src = gameToLoad;
-            document.getElementById('process-id').innerText = `PROCESS // ${gameToLoad.toUpperCase()}`;
+    const urlParams = new URLSearchParams(window.location.search);
+    let gameToLoad = urlParams.get('game');
+    
+    if (gameToLoad) {
+        // If the path starts with a slash, remove it for relative loading
+        if (gameToLoad.startsWith('/')) {
+            gameToLoad = gameToLoad.substring(1);
         }
-    </script>
+        document.getElementById('game-frame').src = gameToLoad;
+        document.getElementById('process-id').innerText = `PROCESS // ${gameToLoad.toUpperCase()}`;
+    }
+</script>
 </body>
 </html>
