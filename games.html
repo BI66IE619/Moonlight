@@ -2178,26 +2178,21 @@
     window.addEventListener('DOMContentLoaded', updateCounter);
 </script>
     <script>
-    // Universal Router for the Player Loader
-    function routeToPlayer(e) {
-        // Find the closest link or element with an href
+    document.addEventListener('click', function(e) {
         const target = e.target.closest('a');
         if (!target) return;
 
         const href = target.getAttribute('href');
-        
-        // Filter out main menu pages and non-html links
         const protectedPages = ['main.html', 'games.html', 'chat.html', 'index.html'];
         
+        // If it's a game in your current folder (/g/)
         if (href && href.endsWith('.html') && !protectedPages.includes(href)) {
             e.preventDefault();
-            window.location.href = `player.html?game=${href}`;
+            // We go UP to the root to find player.html, 
+            // but tell player to look INSIDE /g/ for the game
+            window.location.href = `../player.html?game=g/${href}`;
         }
-    }
-
-    // Listen for clicks on the entire document (Event Delegation)
-    // This works even if you add new games or filter them!
-    document.addEventListener('click', routeToPlayer);
+    });
 </script>
 </body>
 </html>
