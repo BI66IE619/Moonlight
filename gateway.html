@@ -3,14 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight | Gateway</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <title>Moonlight | Terminal Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000;
+            --bg: #050505;
             --accent: #ffffff;
-            --border: rgba(255, 255, 255, 0.1);
+            --dim: #444;
+            --border: rgba(255, 255, 255, 0.08);
             --font-tactical: 'Syncopate', sans-serif;
+            --font-mono: 'Space Mono', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,104 +30,160 @@
 
         #starfield {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            opacity: 0.6;
         }
 
-        .container { text-align: center; z-index: 10; }
+        /* Scanline Effect */
+        body::before {
+            content: " ";
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .container { 
+            width: 400px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            position: relative;
+        }
+
+        .container::before {
+            content: "ID: " attr(data-session);
+            position: absolute; top: -15px; left: 10px;
+            font-size: 8px; color: var(--dim); background: var(--bg); padding: 0 5px;
+        }
 
         .title {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            letter-spacing: 15px;
+            letter-spacing: 12px;
             margin-bottom: 5px;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(255,255,255,0.2);
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
         .subtitle {
-            font-size: 9px;
-            letter-spacing: 5px;
-            color: #444;
-            margin-bottom: 50px;
+            font-size: 8px;
+            letter-spacing: 4px;
+            color: var(--dim);
+            margin-bottom: 40px;
         }
 
-        /* Stealth Selector */
+        /* Stealth Control Panel */
         .stealth-box {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            margin-bottom: 30px;
+            text-align: left;
         }
 
         .stealth-label {
             font-size: 7px;
             letter-spacing: 2px;
-            color: #666;
+            color: #888;
+            margin-bottom: 8px;
+            font-family: var(--font-mono);
         }
 
         select {
+            width: 100%;
             background: #000;
             color: #fff;
             border: 1px solid var(--border);
-            padding: 8px 15px;
-            font-family: var(--font-tactical);
-            font-size: 8px;
-            letter-spacing: 1px;
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 10px;
             outline: none;
             cursor: pointer;
             transition: 0.3s;
+            appearance: none;
         }
 
-        select:hover { border-color: #fff; }
+        select:hover { border-color: #666; }
 
         .launch-btn {
+            width: 100%;
             background: #fff;
             color: #000;
             border: none;
-            padding: 18px 50px;
+            padding: 18px;
             font-family: var(--font-tactical);
-            font-size: 11px;
-            letter-spacing: 3px;
+            font-size: 10px;
+            letter-spacing: 2px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
         .launch-btn:hover {
-            background: #888;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            letter-spacing: 4px;
+            background: #e0e0e0;
         }
 
-        .footer-text {
-            position: fixed; bottom: 30px; font-size: 7px; color: #222; letter-spacing: 2px;
+        .log-output {
+            margin-top: 20px;
+            font-family: var(--font-mono);
+            font-size: 8px;
+            color: #333;
+            text-align: left;
+            height: 40px;
+            overflow: hidden;
+            line-height: 1.5;
+        }
+
+        .footer-status {
+            position: fixed; bottom: 20px; width: 100%;
+            display: flex; justify-content: space-between; padding: 0 30px;
+            font-family: var(--font-mono); font-size: 7px; color: #222;
         }
     </style>
 </head>
-<body>
+<body onload="generateSessionID()">
 
     <canvas id="starfield"></canvas>
 
-    <div class="container">
+    <div class="container" id="gateway-ui" data-session="MNLGHT-0000">
         <div class="title">MOONLIGHT</div>
-        <div class="subtitle">SYSTEM_READY</div>
+        <div class="subtitle">ENCRYPTED_GATEWAY</div>
 
         <div class="stealth-box">
-            <div class="stealth-label">SELECT_DECOY_REDIRECT:</div>
+            <div class="stealth-label">// REDIRECT_PROTOCOL</div>
             <select id="decoySelect">
-                <option value="https://www.google.com">GOOGLE_SEARCH</option>
-                <option value="https://www.wikipedia.org">WIKIPEDIA_DB</option>
-                <option value="https://instructure.com">CANVAS_LMS</option>
-                <option value="https://docs.google.com">GOOGLE_DOCS</option>
+                <option value="none">DECOY: NONE (STAY_HERE)</option>
+                <option value="https://www.google.com">DECOY: GOOGLE_SEARCH</option>
+                <option value="https://www.wikipedia.org">DECOY: WIKIPEDIA_DB</option>
+                <option value="https://instructure.com">DECOY: CANVAS_LMS</option>
+                <option value="https://docs.google.com">DECOY: GOOGLE_DOCS</option>
             </select>
         </div>
 
-        <button class="launch-btn" onclick="initiateLaunch()">INITIALIZE_LAUNCH</button>
+        <button class="launch-btn" id="launchBtn" onclick="initiateLaunch()">INITIALIZE_SESSION</button>
+
+        <div class="log-output" id="terminalLog">
+            > WAITING_FOR_INPUT...<br>
+            > STATUS: READY
+        </div>
     </div>
 
-    <div class="footer-text">SECURE_TUNNEL_ACTIVE // STB_V2</div>
+    <div class="footer-status">
+        <div>CONNECTION: SECURE</div>
+        <div>V2.5 // PHASE_SHIFT</div>
+    </div>
 
     <script>
-        // Starfield
+        // Session ID Gen
+        function generateSessionID() {
+            const id = "MNLGHT-" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('gateway-ui').setAttribute('data-session', id);
+        }
+
+        // Starfield Engine
         const canvas = document.getElementById('starfield');
         const ctx = canvas.getContext('2d');
         let stars = [];
@@ -134,12 +192,12 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             stars = [];
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 100; i++) {
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 1.5,
-                    speed: Math.random() * 0.05
+                    size: Math.random() * 1.2,
+                    speed: Math.random() * 0.03
                 });
             }
         }
@@ -153,38 +211,63 @@
             });
             requestAnimationFrame(drawStars);
         }
-
         window.addEventListener('resize', initStars);
-        initStars();
-        drawStars();
+        initStars(); drawStars();
+
+        // Terminal Log Animation
+        function log(text) {
+            const logDiv = document.getElementById('terminalLog');
+            logDiv.innerHTML += `<br>> ${text}`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
 
         // Launch Logic
-        function initiateLaunch() {
+        async function initiateLaunch() {
+            const btn = document.getElementById('launchBtn');
             const decoyUrl = document.getElementById('decoySelect').value;
             const mainUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/main.html";
+
+            // Boot Sequence Visual
+            btn.disabled = true;
+            btn.innerText = "AUTHENTICATING...";
+            log("BYPASSING_RESTRICTIONS...");
+            
+            await new Promise(r => setTimeout(r, 600));
+            log("INJECTING_CLOAK...");
             
             const win = window.open();
             if (!win) {
-                alert("ACCESS_DENIED: Please allow popups to initialize Moonlight.");
+                alert("POPUP_BLOCKED: Enable popups to proceed.");
+                btn.disabled = false;
+                btn.innerText = "RETRY_LAUNCH";
                 return;
             }
 
-            // Set decoy info for the about:blank tab
-            win.document.title = "Classes"; 
+            // About:Blank Cloaking
+            win.document.title = "Google Docs"; // Default tab name
             win.document.body.style.margin = "0";
             win.document.body.style.height = "100vh";
             win.document.body.style.overflow = "hidden";
+            win.document.body.style.background = "#000";
 
             const iframe = win.document.createElement('iframe');
             iframe.style.width = "100%";
             iframe.style.height = "100%";
             iframe.style.border = "none";
             iframe.src = mainUrl;
-
             win.document.body.appendChild(iframe);
+
+            log("SESSION_STABILIZED.");
             
-            // Redirect the original tab to the chosen decoy
-            window.location.replace(decoyUrl);
+            // Final Step: Redirection
+            setTimeout(() => {
+                if (decoyUrl !== "none") {
+                    window.location.replace(decoyUrl);
+                } else {
+                    btn.innerText = "SYSTEM_LIVE";
+                    log("READY_IN_NEW_TAB.");
+                }
+            }, 500);
         }
     </script>
 </body>
