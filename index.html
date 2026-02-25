@@ -10,8 +10,8 @@
             --bg: #050505;
             --accent: #ffffff;
             --text-bright: #ffffff;
-            --text-medium: #bbbbbb; /* Brighter gray */
-            --text-dim: #777777;    /* Visible gray */
+            --text-medium: #bbbbbb;
+            --text-dim: #777777;
             --border: rgba(255, 255, 255, 0.2);
             --font-tactical: 'Syncopate', sans-serif;
             --font-mono: 'Space Mono', monospace;
@@ -26,18 +26,27 @@
             color: var(--text-bright);
         }
 
+        /* Starfield Layer */
+        #starfield {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
         #stage {
             position: relative;
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
+            z-index: 1;
         }
 
-        /* --- Section 1: Loader --- */
+        /* --- Loader --- */
         #loader-wrapper {
             position: absolute;
             transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.8s ease;
             text-align: center;
-            z-index: 2;
         }
 
         .loader-logo { width: 140px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.3)); }
@@ -49,22 +58,22 @@
         #progress-fill { width: 0%; height: 100%; background: #fff; transition: width 0.3s ease; }
         #boot-status { font-size: 10px; letter-spacing: 5px; color: var(--text-medium); text-transform: uppercase; }
 
-        /* --- Section 2: Gateway --- */
+        /* --- Gateway --- */
         #gateway-wrapper {
             position: absolute;
             transform: translateX(120px); 
             opacity: 0;
             transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.8s ease;
             pointer-events: none;
-            z-index: 1;
         }
 
         .terminal-box {
             width: 500px;
             padding: 60px;
             border: 1px solid var(--border);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.92);
             position: relative;
+            backdrop-filter: blur(10px);
             box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
@@ -98,7 +107,9 @@
         .slide-in { transform: translateX(0) !important; opacity: 1 !important; pointer-events: auto !important; }
     </style>
 </head>
-<body>
+<body onload="initAll()">
+
+    <canvas id="starfield"></canvas>
 
     <div id="stage">
         <div id="loader-wrapper">
@@ -129,6 +140,36 @@
     </div>
 
     <script>
+        // Starfield Logic
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 150; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * 0.05
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fff';
+            stars.forEach(star => {
+                ctx.beginPath(); ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2); ctx.fill();
+                star.y -= star.speed; if (star.y < 0) star.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        // Boot Logic
         const bootSequences = [
             { text: "INITIALIZING KERNEL...", delay: 400, progress: 20 },
             { text: "CONNECTING TO RELAY...", delay: 600, progress: 45 },
@@ -147,7 +188,6 @@
                 const step = bootSequences[currentStep];
                 statusText.innerText = step.text;
                 progressFill.style.width = `${step.progress}%`;
-
                 setTimeout(() => {
                     currentStep++;
                     runBoot();
@@ -163,10 +203,7 @@
         }
 
         function initializeSameTabCloak() {
-            // Path to your hub
             const mainUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/main.html";
-            
-            // Wipe the current document and replace it with the cloak
             document.open();
             document.write(`
                 <!DOCTYPE html>
@@ -184,15 +221,15 @@
                 </html>
             `);
             document.close();
-
-            // Push an about:blank state to history so the URL bar behaves 
-            // (Note: full URL bar masking to about:blank on the SAME tab requires 
-            // the user to be on a page that was already opened as about:blank. 
-            // This method cloaks the content perfectly while remaining in the same tab.)
-            history.replaceState(null, null, " ");
         }
 
-        window.onload = runBoot;
+        function initAll() {
+            initStars();
+            drawStars();
+            runBoot();
+        }
+
+        window.addEventListener('resize', initStars);
     </script>
 </body>
 </html>
