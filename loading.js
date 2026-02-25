@@ -25,15 +25,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 runBootSequence();
             }, step.delay);
         } else {
-            // THE REDIRECT: Once finished, move to main.html
+            // --- AUTOMATED STEALTH LAUNCH ---
             setTimeout(() => {
                 loaderWrapper.style.opacity = '0';
                 
-                setTimeout(() => {
-                    window.location.href = 'gateway.html';
-                }, 800); // Wait for the fade animation to finish
+                // Trigger the cloak and redirect
+                autoInitializeCloak();
             }, 500);
         }
+    }
+
+    function autoInitializeCloak() {
+        // Path to your actual hub
+        const mainUrl = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/main.html";
+        // The decoy site that stays in your history/tab
+        const decoyUrl = "https://www.google.com"; 
+
+        const win = window.open();
+        
+        if (!win) {
+            // If popups are blocked, give the user a way to manual-trigger
+            statusText.style.color = "#ff3333";
+            statusText.innerText = "POPUP_BLOCKED: CLICK_TO_PROCEED";
+            loaderWrapper.style.opacity = '1'; // Bring loader back so they can see the message
+            
+            window.onclick = () => {
+                const retryWin = window.open();
+                if (retryWin) finalize(retryWin, mainUrl, decoyUrl);
+            };
+            return;
+        }
+
+        finalize(win, mainUrl, decoyUrl);
+    }
+
+    function finalize(win, mainUrl, decoyUrl) {
+        // Build the about:blank disguise
+        win.document.title = "Google Docs"; 
+        win.document.body.style.margin = "0";
+        win.document.body.style.height = "100vh";
+        win.document.body.style.overflow = "hidden";
+        win.document.body.style.background = "#000";
+
+        const iframe = win.document.createElement('iframe');
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        iframe.style.border = "none";
+        iframe.src = mainUrl;
+        
+        win.document.body.appendChild(iframe);
+
+        // Instantly switch this tab to the decoy
+        window.location.replace(decoyUrl);
     }
 
     runBootSequence();
