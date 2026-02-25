@@ -6,56 +6,71 @@
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { height: 100%; background: #000; font-family: 'Syncopate', sans-serif; overflow: hidden; }
+        
+        body, html { 
+            height: 100vh; 
+            width: 100vw;
+            background: #000; 
+            font-family: 'Syncopate', sans-serif; 
+            overflow: hidden;
+            display: flex;
+            flex-direction: column; /* Forces header and game to stack */
+        }
 
         header {
-            height: 45px;
+            height: 50px;
+            min-height: 50px; /* Prevents shrinking */
             background: #000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #222;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            position: relative;
-            z-index: 9999; /* Keeps bar above the game */
+            z-index: 10000;
         }
 
         .status { color: #444; font-size: 8px; letter-spacing: 2px; }
+        
         .back-btn {
-            color: #fff; font-size: 9px; letter-spacing: 2px; cursor: pointer;
-            border: 1px solid #fff; padding: 5px 15px; transition: 0.2s;
+            color: #fff;
+            font-size: 9px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border: 1px solid #fff;
+            padding: 6px 16px;
+            transition: 0.2s;
         }
+
         .back-btn:hover { background: #fff; color: #000; }
 
-        #game-container {
+        #game-view {
+            flex-grow: 1; /* Fills remaining screen space */
             width: 100%;
-            height: calc(100vh - 45px);
+            border: none;
             background: #000;
         }
-        iframe { width: 100%; height: 100%; border: none; display: block; }
     </style>
 </head>
 <body>
+
     <header>
-        <div class="status" id="process-id">EXEC // ...</div>
+        <div class="status" id="proc">EXEC // SYSTEM_INIT</div>
         <div class="back-btn" onclick="window.location.href='games.html'">[ TERMINATE_SESSION ]</div>
     </header>
-    <div id="game-container">
-        <iframe id="game-frame" src=""></iframe>
-    </div>
+
+    <iframe id="game-view" src=""></iframe>
 
     <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    let gameToLoad = urlParams.get('game');
-    
-    if (gameToLoad) {
-        // If the path starts with a slash, remove it for relative loading
-        if (gameToLoad.startsWith('/')) {
-            gameToLoad = gameToLoad.substring(1);
+        const params = new URLSearchParams(window.location.search);
+        let gameUrl = params.get('game');
+
+        if (gameUrl) {
+            // Remove leading slash if it exists (/g/ -> g/)
+            if (gameUrl.startsWith('/')) gameUrl = gameUrl.substring(1);
+            
+            document.getElementById('game-view').src = gameUrl;
+            document.getElementById('proc').innerText = `PROCESS // ${gameUrl.split('/').pop().toUpperCase()}`;
         }
-        document.getElementById('game-frame').src = gameToLoad;
-        document.getElementById('process-id').innerText = `PROCESS // ${gameToLoad.toUpperCase()}`;
-    }
-</script>
+    </script>
 </body>
 </html>
