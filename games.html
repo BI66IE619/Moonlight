@@ -2178,20 +2178,32 @@
     window.addEventListener('DOMContentLoaded', updateCounter);
 </script>
     <script>
+    // High-Priority Router for the Player Loader
     document.addEventListener('click', function(e) {
+        // 1. Find the link that was clicked
         const target = e.target.closest('a');
+        
+        // 2. If it's not a link, ignore it
         if (!target) return;
 
         const href = target.getAttribute('href');
+
+        // 3. Define pages that should open NORMALLY (not in the player)
         const protectedPages = ['main.html', 'games.html', 'chat.html', 'index.html', 'player.html'];
-        
-        // If it's a link to your games folder or a standalone game file
+
+        // 4. Check if it's a game link (inside the /g/ folder or ending in .html)
         if (href && href.endsWith('.html') && !protectedPages.includes(href)) {
+            
+            // STOP the browser from actually going to /g/game.html
             e.preventDefault();
-            // Since player.html and games.html are in the same root folder:
+            e.stopPropagation();
+
+            console.log("Moonlight Router: Intercepted " + href);
+
+            // FORCE it to go to player.html instead
             window.location.href = `player.html?game=${href}`;
         }
-    });
+    }, true); // The "true" here makes this higher priority than other scripts
 </script>
 </body>
 </html>
