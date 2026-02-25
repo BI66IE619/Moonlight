@@ -2178,46 +2178,38 @@
     window.addEventListener('DOMContentLoaded', updateCounter);
 </script>
     <script>
-    // Universal Hijacker for div-based onclick games
-    function applyMoonlightRouting() {
-        // 1. Find every rectangle that has a game link
+    function forceMoonlightRouting() {
         const gameDivs = document.querySelectorAll('.rectangle');
-
+        
         gameDivs.forEach(div => {
-            const originalClick = div.getAttribute('onclick');
+            const originalAction = div.getAttribute('onclick');
             
-            // 2. Check if it's a game link and hasn't been hijacked yet
-            if (originalClick && originalClick.includes('/g/') && !div.dataset.hijacked) {
-                
-                // Extract the URL from window.location.href='/g/game.html'
-                const match = originalClick.match(/'([^']+)'/);
+            if (originalAction && originalAction.includes('/g/')) {
+                // 1. Extract the URL from the onclick string
+                const match = originalAction.match(/'([^']+)'/);
                 if (match && match[1]) {
-                    const gameUrl = match[1];
+                    const gamePath = match[1];
                     
-                    // 3. Overwrite the onclick to use player.html
+                    // 2. Clear the original onclick entirely
+                    div.removeAttribute('onclick');
+                    div.setAttribute('onclick', ''); 
+                    
+                    // 3. Set a new Moonlight-specific click event
                     div.onclick = function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        // Strip the leading slash if it exists so it's a relative path
-                        const cleanPath = gameUrl.startsWith('/') ? gameUrl.substring(1) : gameUrl;
+                        // Clean the path and redirect
+                        const cleanPath = gamePath.startsWith('/') ? gamePath.substring(1) : gamePath;
                         window.location.href = `player.html?game=${cleanPath}`;
                     };
-                    
-                    // Mark as hijacked so we don't do it twice
-                    div.dataset.hijacked = "true";
                 }
             }
         });
     }
 
-    // Run it immediately and also after any search/filter
-    applyMoonlightRouting();
-    
-    // If your search script runs, we re-apply to be safe
-    const searchInput = document.getElementById('gameSearch');
-    if(searchInput) {
-        searchInput.addEventListener('keyup', applyMoonlightRouting);
-    }
+    // Run on load
+    window.addEventListener('load', forceMoonlightRouting);
+    // Run whenever the user types in search (in case new divs appear)
+    document.getElementById('gameSearch').addEventListener('keyup', forceMoonlightRouting);
 </script>
 </body>
 </html>
