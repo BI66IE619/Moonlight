@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loaderWrapper.style.opacity = '0';
                 
                 setTimeout(() => {
-                    window.location.href = 'main.html';
+                    window.location.href = 'gateway.html';
                 }, 800); // Wait for the fade animation to finish
             }, 500);
         }
