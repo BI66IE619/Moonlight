@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Moonlight | Terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Syncopate', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .launch-box {
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 60px;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 { font-size: 14px; letter-spacing: 5px; margin-bottom: 30px; color: #444; }
+
+        .btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #888;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+    
+    <div class="launch-box">
+        <h1>ACCESS_RESTRICTED</h1>
+        <button class="btn" onclick="launch('chat.html')">INITIALIZE_CONNECTION</button>
+    </div>
+
+    <script>
+        function launch(url) {
+            // 1. Create the new about:blank window
+            var win = window.open();
+            if (!win) {
+                alert("Please allow popups for this site!");
+                return;
+            }
+
+            // 2. Set the window's style to remove margins
+            win.document.body.style.margin = '0';
+            win.document.body.style.height = '100vh';
+
+            // 3. Create an iframe that fills the entire screen
+            var iframe = win.document.createElement('iframe');
+            iframe.style.border = 'none';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.margin = '0';
+            iframe.src = window.location.href.substring(0, window.location.href.lastIndexOf("/")) + "/" + url;
+
+            // 4. Inject it
+            win.document.body.appendChild(iframe);
+            
+            // 5. Optional: Close the launcher or redirect it to Google
+            window.location.replace("https://google.com");
+        }
+
+        // Simple Starfield Background
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let s = [];
+        for(let i=0; i<100; i++) s.push({x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1});
+        function draw() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle="#fff";
+            s.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+                p.y -= 0.2; if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+</html>
