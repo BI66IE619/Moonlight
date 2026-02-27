@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlight | Sentinel</title>
+    <title>Moonlight | Filter Scan</title>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050505;
             --text-bright: #ffffff;
             --text-dim: #777777;
-            --glass: rgba(10, 10, 10, 0.9);
+            --glass: rgba(10, 10, 10, 0.95);
             --border: rgba(255, 255, 255, 0.15);
             --success: #00ff88;
             --danger: #ff3333;
@@ -20,67 +20,73 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100%; height: 100%; background: var(--bg); overflow: hidden; font-family: var(--font-tactical); color: var(--text-bright); }
-
         #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.5; }
-
         .ui-wrapper { position: relative; z-index: 10; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
         .container {
-            background: var(--glass); backdrop-filter: blur(15px); padding: 50px;
-            border: 1px solid var(--border); max-width: 750px; width: 100%;
-            text-align: center; position: relative;
+            background: var(--glass); backdrop-filter: blur(20px); padding: 50px;
+            border: 1px solid var(--border); max-width: 800px; width: 100%;
+            text-align: center; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
         .container::before {
-            content: "INTERNAL_DIAGNOSTIC_v2.0";
+            content: "ID: MNLGHT-FILTER-SENTINEL";
             position: absolute; top: -12px; left: 30px;
-            font-size: 9px; color: var(--text-dim); background: var(--bg); padding: 0 10px;
+            font-size: 10px; color: var(--text-dim); background: var(--bg); padding: 0 12px;
             font-family: var(--font-mono);
         }
 
-        h1 { font-size: 1.8rem; letter-spacing: 12px; margin-bottom: 10px; text-transform: uppercase; }
+        h1 { font-size: 1.8rem; letter-spacing: 12px; margin-bottom: 5px; text-transform: uppercase; }
         .subtitle { color: var(--text-dim); margin-bottom: 40px; font-size: 9px; letter-spacing: 4px; }
 
         .input-box { display: flex; gap: 10px; margin-bottom: 25px; }
         input[type="text"] {
-            flex: 1; padding: 18px 25px; font-size: 11px; font-family: var(--font-mono);
+            flex: 1; padding: 18px 25px; font-size: 12px; font-family: var(--font-mono);
             background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
             color: white; outline: none; transition: 0.3s;
         }
-        input[type="text"]:focus { border-color: #fff; }
+        input[type="text"]:focus { border-color: #fff; background: rgba(255,255,255,0.05); }
 
         button { background: #fff; color: #000; border: none; padding: 0 35px; font-size: 10px; font-weight: 700; font-family: var(--font-tactical); cursor: pointer; transition: 0.3s; }
-        button:hover { background: #bbb; }
+        button:hover { background: #bbb; letter-spacing: 2px; }
 
         #terminal-log {
-            display: none; font-family: var(--font-mono); font-size: 10px; color: #fff;
-            text-align: left; background: rgba(0,0,0,0.8); padding: 20px;
-            border: 1px solid var(--border); height: 120px; overflow-y: auto; margin-top: 10px;
+            display: none; font-family: var(--font-mono); font-size: 11px; color: #fff;
+            text-align: left; background: rgba(0,0,0,0.8); padding: 25px;
+            border: 1px solid var(--border); height: 140px; overflow-y: auto; margin-top: 10px;
+            line-height: 1.6;
         }
 
         .results-wrapper { margin-top: 30px; display: none; }
-        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .filter-card { padding: 15px 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .blocked { border-left: 4px solid var(--danger); }
-        .allowed { border-left: 4px solid var(--success); }
-        .filter-name { font-weight: 700; font-size: 10px; letter-spacing: 2px; }
-        .status-pill { font-size: 9px; font-weight: 700; padding: 4px 8px; border-radius: 2px; }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .filter-card { padding: 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        
+        .blocked { border-left: 4px solid var(--danger); background: rgba(255, 51, 51, 0.02); }
+        .allowed { border-left: 4px solid var(--success); background: rgba(0, 255, 136, 0.02); }
+        
+        .filter-name { font-weight: 700; font-size: 11px; letter-spacing: 2px; }
+        .filter-cat { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-top: 5px; }
+
+        .status-pill { font-size: 9px; font-weight: 800; padding: 5px 10px; border-radius: 2px; text-transform: uppercase; }
         .blocked .status-pill { color: var(--danger); border: 1px solid var(--danger); }
         .allowed .status-pill { color: var(--success); border: 1px solid var(--success); }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #444; }
     </style>
 </head>
-<body>
+<body onload="initAll()">
 
     <canvas id="starfield"></canvas>
 
     <div class="ui-wrapper">
         <div class="container">
             <h1>SENTINEL</h1>
-            <p class="subtitle">Autonomous Link Integrity Protocol</p>
+            <p class="subtitle">Filter-Detection & Integrity Analysis</p>
             
             <div class="input-box">
-                <input type="text" id="urlInput" placeholder="TARGET_URL_OR_DOMAIN..." spellcheck="false">
-                <button onclick="startScan()">SCAN</button>
+                <input type="text" id="urlInput" placeholder="DOMAIN_TO_PROBE (e.g. roblox.com)..." spellcheck="false">
+                <button onclick="probeFilters()">SCAN</button>
             </div>
 
             <div id="terminal-log"></div>
@@ -104,20 +110,16 @@
             }
         }
         function animate() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "#fff";
-            stars.forEach(s => {
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
-                s.y -= s.speed; if(s.y < 0) s.y = canvas.height;
-            });
+            ctx.clearRect(0,0,canvas.width, canvas.height); ctx.fillStyle = "#fff";
+            stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill(); s.y -= s.speed; if(s.y < 0) s.y = canvas.height; });
             requestAnimationFrame(animate);
         }
-        initStars(); animate();
 
-        // --- SCANNER ENGINE ---
-        async function startScan() {
-            const input = document.getElementById('urlInput').value.trim();
+        // --- FILTER ENGINE ---
+        async function probeFilters() {
+            let input = document.getElementById('urlInput').value.trim().toLowerCase();
             if (!input) return;
+            input = input.replace(/^https?:\/\//, '').split('/')[0];
 
             const terminal = document.getElementById('terminal-log');
             const wrapper = document.getElementById('resultsWrapper');
@@ -127,54 +129,61 @@
             terminal.style.display = 'block';
             terminal.innerHTML = "";
 
-            const addLog = (msg) => {
-                terminal.innerHTML += `<div>> ${msg}</div>`;
-                terminal.scrollTop = terminal.scrollHeight;
-            };
+            const log = (msg) => { terminal.innerHTML += `<div>> ${msg}</div>`; terminal.scrollTop = terminal.scrollHeight; };
 
-            addLog("INITIALIZING SENTINEL CORE...");
+            log(`INITIATING PROBE: ${input}`);
             await new Promise(r => setTimeout(r, 600));
-            addLog(`TARGET ACQUIRED: ${input}`);
+            log("QUERYING CLOUD REPUTATION DATABASES...");
             
-            // Simulation of deep checks
-            const modules = [
-                { name: "DNS_REPUTATION", cat: "Infrastructure" },
-                { name: "SSL_INTEGRITY", cat: "Encryption" },
-                { name: "PHISH_DB_v4", cat: "Security" },
-                { name: "MALWARE_HOST", cat: "Threat_Intel" }
+            // The Filter List
+            const filters = [
+                { name: "GoGuardian", key: "goguardian" },
+                { name: "Securly", key: "securly" },
+                { name: "Linewize", key: "linewize" },
+                { name: "Lightspeed", key: "lightspeed" },
+                { name: "Fortinet", key: "fortinet" },
+                { name: "Zscaler", key: "zscaler" }
             ];
 
-            for (let m of modules) {
-                addLog(`RUNNING ${m.name}...`);
-                await new Promise(r => setTimeout(r, 400 + Math.random() * 600));
+            // Logic Simulation based on domain patterns
+            // Real detection: Usually based on keywords like 'game', 'proxy', 'video'
+            const blockedKeywords = ['game', 'roblox', 'discord', 'proxy', 'unblock', 'movie', 'tv', 'free'];
+            const isLikelyBlocked = blockedKeywords.some(k => input.includes(k));
+
+            for (let f of filters) {
+                log(`CHECKING ${f.name.toUpperCase()} RECOGNITION...`);
+                await new Promise(r => setTimeout(r, 300 + Math.random() * 500));
             }
 
-            addLog("ANALYSIS COMPLETE. RENDERING REPORT.");
-            await new Promise(r => setTimeout(r, 500));
+            log("ANALYSIS COMPLETE. TABULATING RESULTS.");
+            await new Promise(r => setTimeout(r, 600));
 
             terminal.style.display = 'none';
             grid.innerHTML = '';
 
-            // Logic: If url contains "google", "edu", or "org", mark as Clear. 
-            // If it's a known game site or weird TLD, mark as Blocked.
-            const isSuspicious = !input.includes('.gov') && !input.includes('.edu') && (input.includes('proxy') || input.includes('unblock'));
-
-            modules.forEach(m => {
-                const isBlocked = isSuspicious && Math.random() > 0.3; // Randomized but influenced by suspicion
+            filters.forEach(f => {
+                // If it's a known bad keyword, it's blocked. 
+                // We add a tiny bit of "Randomness" because some filters are slower than others.
+                const status = isLikelyBlocked ? (Math.random() > 0.15 ? "Blocked" : "Clear") : "Clear";
+                const isBlocked = status === "Blocked";
+                
                 const card = document.createElement('div');
                 card.className = `filter-card ${isBlocked ? 'blocked' : 'allowed'}`;
                 card.innerHTML = `
                     <div>
-                        <div class="filter-name">${m.name}</div>
-                        <div class="filter-cat">// ${m.cat}</div>
+                        <div class="filter-name">${f.name}</div>
+                        <div class="filter-cat">// STATUS: ${isBlocked ? 'FLAGGED_AS_GAMES' : 'UNRECOGNIZED'}</div>
                     </div>
-                    <span class="status-pill">${isBlocked ? 'FLAGGED' : 'STABLE'}</span>
+                    <span class="status-pill">${isBlocked ? 'Blocked' : 'Clear'}</span>
                 `;
                 grid.appendChild(card);
             });
 
             wrapper.style.display = 'block';
         }
+
+        function initAll() { initStars(); animate(); }
+        window.addEventListener('resize', initStars);
     </script>
 </body>
 </html>
