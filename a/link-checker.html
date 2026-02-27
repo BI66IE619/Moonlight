@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moonlight | Link Checker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #ffffff;
+            --text-bright: #ffffff;
+            --text-dim: #777777;
+            --glass: rgba(10, 10, 10, 0.85);
+            --border: rgba(255, 255, 255, 0.15);
+            --success: #00ff88;
+            --danger: #ff3333;
+            --font-tactical: 'Syncopate', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body, html {
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            overflow: hidden;
+            font-family: var(--font-tactical);
+            color: var(--text-bright);
+        }
+
+        /* Starfield Background */
+        #starfield {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; opacity: 0.5;
+        }
+
+        .ui-wrapper {
+            position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px;
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 50px;
+            border: 1px solid var(--border);
+            max-width: 750px; width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        /* The Tactical ID Tag */
+        .container::before {
+            content: "MODULE: LINK_SCANNER_V4";
+            position: absolute; top: -12px; left: 30px;
+            font-size: 9px; color: var(--text-dim);
+            background: var(--bg); padding: 0 10px;
+            font-family: var(--font-mono);
+        }
+
+        h1 {
+            font-size: 1.8rem; font-weight: 700;
+            letter-spacing: 12px; margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .input-box { display: flex; gap: 10px; margin-bottom: 25px; }
+
+        input[type="text"] {
+            flex: 1; padding: 18px 25px;
+            font-size: 11px; font-family: var(--font-mono);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: white; outline: none;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus { border-color: #fff; background: rgba(255,255,255,0.05); }
+
+        button {
+            background: #fff; color: #000;
+            border: none; padding: 0 35px;
+            font-size: 10px; font-weight: 700;
+            font-family: var(--font-tactical);
+            cursor: pointer; transition: 0.3s;
+        }
+        button:hover { background: #bbb; letter-spacing: 2px; }
+
+        #terminal-log {
+            display: none;
+            font-family: var(--font-mono);
+            font-size: 10px; color: #fff;
+            text-align: left;
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border: 1px solid var(--border);
+            height: 100px; overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .results-wrapper { margin-top: 30px; display: none; }
+
+        .filter-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; max-height: 350px;
+            overflow-y: auto; padding-right: 10px;
+        }
+
+        .filter-card {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .blocked { border-left: 4px solid var(--danger); }
+        .allowed { border-left: 4px solid var(--success); }
+
+        .filter-name { font-weight: 700; font-size: 10px; letter-spacing: 2px; }
+        .filter-cat { font-family: var(--font-mono); font-size: 9px; color: var(--text-dim); margin-top: 4px; }
+
+        .status-pill {
+            font-size: 9px; font-weight: 700;
+            padding: 4px 8px; border-radius: 2px;
+        }
+        .blocked .status-pill { color: var(--danger); border: 1px solid var(--danger); }
+        .allowed .status-pill { color: var(--success); border: 1px solid var(--success); }
+
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+    </style>
+</head>
+<body>
+
+    <canvas id="starfield"></canvas>
+
+    <div class="ui-wrapper">
+        <div class="container">
+            <h1>MOONLIGHT_SCAN</h1>
+            <p class="subtitle">Diagnostic Link Analysis Protocol</p>
+            
+            <div class="input-box">
+                <input type="text" id="urlInput" placeholder="ENTER_DOMAIN_FOR_ANALYSIS..." spellcheck="false">
+                <button id="checkBtn" onclick="handleCheck()">SCAN</button>
+            </div>
+
+            <div id="terminal-log"></div>
+
+            <div class="results-wrapper" id="resultsWrapper">
+                <div class="filter-grid" id="filterGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MOONLIGHT STARFIELD ---
+        const canvas = document.getElementById('starfield');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random()*canvas.width, 
+                    y: Math.random()*canvas.height, 
+                    size: Math.random()*1.5, 
+                    speed: Math.random()*0.05 
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            ctx.fillStyle = "#fff";
+            stars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+                s.y -= s.speed; if(s.y < 0) s.y = canvas.height;
+            });
+            requestAnimationFrame(animate);
+        }
+        initStars(); animate();
+
+        // --- SCAN LOGIC ---
+        async function handleCheck() {
+            const input = document.getElementById('urlInput');
+            const terminal = document.getElementById('terminal-log');
+            const wrapper = document.getElementById('resultsWrapper');
+            const grid = document.getElementById('filterGrid');
+            
+            let url = input.value.trim().replace(/^https?:\/\//, '').split('/')[0];
+            if (!url) return;
+
+            wrapper.style.display = 'none';
+            terminal.style.display = 'block';
+            terminal.innerHTML = "";
+            
+            const logSteps = [
+                `> INITIATING HANDSHAKE: ${url}`,
+                `> BYPASSING LOCAL_DNS_CACHE...`,
+                `> QUERYING GLOBAL_FILTER_MODULES...`,
+                `> PACKET_DECODE_COMPLETE.`
+            ];
+
+            for(let step of logSteps) {
+                terminal.innerHTML += `<div>${step}</div>`;
+                await new Promise(r => setTimeout(r, 400));
+            }
+
+            try {
+                // Connecting to your Railway backend
+                const response = await fetch(`https://link-checker-production-4acf.up.railway.app/check?url=${encodeURIComponent(url)}`);
+                const data = await response.json();
+                terminal.style.display = 'none';
+                grid.innerHTML = '';
+
+                Object.entries(data.reports).forEach(([name, result]) => {
+                    let isBlocked = false;
+                    let cat = "Unknown";
+                    
+                    if (Array.isArray(result)) [cat, isBlocked] = result;
+                    else if (typeof result === 'object') { cat = result.category || "N/A"; isBlocked = result.blocked; }
+                    else { isBlocked = true; cat = result; }
+
+                    const card = document.createElement('div');
+                    card.className = `filter-card ${isBlocked ? 'blocked' : 'allowed'}`;
+                    card.innerHTML = `
+                        <div>
+                            <div class="filter-name">${name.toUpperCase()}</div>
+                            <div class="filter-cat">// CATEGORY: ${cat}</div>
+                        </div>
+                        <span class="status-pill">${isBlocked ? 'BLOCKED' : 'CLEAR'}</span>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                wrapper.style.display = 'block';
+            } catch (e) {
+                terminal.innerHTML += `<div style="color:red">> ERROR: UPLINK_FAILED</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
