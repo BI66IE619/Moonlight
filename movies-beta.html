@@ -223,11 +223,6 @@
             if (savedIcon) document.getElementById('siteIcon').href = savedIcon;
         };
 
-        // Anti-Leak Redirect
-        if (window.self === window.top) {
-            document.documentElement.innerHTML = `<body style="background:#000; color:#ff3333; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh;">SECURE_TUNNEL_BREACHED - REDIRECTING...</body>`;
-            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
-        }
     </script>
 </body>
 </html>
