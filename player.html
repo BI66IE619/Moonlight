@@ -14,14 +14,14 @@
             font-family: 'Syncopate', sans-serif; 
             overflow: hidden;
             display: flex;
-            flex-direction: column; /* Forces header and game to stack */
+            flex-direction: column;
         }
 
         header {
             height: 50px;
-            min-height: 50px; /* Prevents shrinking */
+            min-height: 50px;
             background: #000;
-            border-bottom: 2px solid #222;
+            border-bottom: 2px solid #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -29,7 +29,7 @@
             z-index: 10000;
         }
 
-        .status { color: #444; font-size: 8px; letter-spacing: 2px; }
+        .status { color: #444; font-size: 8px; letter-spacing: 2px; text-transform: uppercase; }
         
         .back-btn {
             color: #fff;
@@ -37,14 +37,15 @@
             letter-spacing: 2px;
             cursor: pointer;
             border: 1px solid #fff;
-            padding: 6px 16px;
-            transition: 0.2s;
+            padding: 8px 18px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
         }
 
-        .back-btn:hover { background: #fff; color: #000; }
+        .back-btn:hover { background: #fff; color: #000; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
         #game-view {
-            flex-grow: 1; /* Fills remaining screen space */
+            flex-grow: 1;
             width: 100%;
             border: none;
             background: #000;
@@ -55,21 +56,46 @@
 
     <header>
         <div class="status" id="proc">EXEC // SYSTEM_INIT</div>
-        <div class="back-btn" onclick="window.location.href='games.html'">[ TERMINATE_SESSION ]</div>
+        <div class="back-btn" id="terminateBtn" onclick="terminateSession()">[ TERMINATE_SESSION ]</div>
     </header>
 
-    <iframe id="game-view" src=""></iframe>
+    <iframe id="game-view" src="about:blank"></iframe>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        let gameUrl = params.get('game');
+        // Use DOMContentLoaded to ensure the header/button are ready 100% of the time
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            let gameUrl = params.get('game');
+            const procDisplay = document.getElementById('proc');
+            const gameView = document.getElementById('game-view');
 
-        if (gameUrl) {
-            // Remove leading slash if it exists (/g/ -> g/)
-            if (gameUrl.startsWith('/')) gameUrl = gameUrl.substring(1);
-            
-            document.getElementById('game-view').src = gameUrl;
-            document.getElementById('proc').innerText = `PROCESS // ${gameUrl.split('/').pop().toUpperCase()}`;
+            if (gameUrl) {
+                // Clean the URL path
+                if (gameUrl.startsWith('/')) gameUrl = gameUrl.substring(1);
+                
+                // Inject Source
+                gameView.src = gameUrl;
+                
+                // Update Processor Text
+                const gameName = gameUrl.split('/').filter(Boolean).pop();
+                procDisplay.innerText = `PROCESS // ${gameName.toUpperCase()}`;
+            } else {
+                procDisplay.innerText = "ERROR // NO_DATA_DETECTED";
+                procDisplay.style.color = "#ff3333";
+            }
+        });
+
+        // Dedicated function to handle the back navigation
+        function terminateSession() {
+            // Kill the iframe first to free up memory/stop sound
+            document.getElementById('game-view').src = "about:blank";
+            // Redirect
+            window.location.href = 'games.html';
+        }
+
+        // Emergency Breakout: If someone tries to inspect or frame-burst
+        if (window.self === window.top && !window.location.href.includes('about:blank')) {
+            // Optional: You can put your auto-cloaker logic here
         }
     </script>
 </body>
