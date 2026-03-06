@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Moonlight | Library</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="games.css">
+</head>
+<body class="games-page">
+    <canvas id="starfield"></canvas>
+
+    <div class="ui-wrapper">
+        <nav class="top-nav">
+            <div class="nav-logo" onclick="window.location.href='main.html'" style="cursor:pointer">M // BACK</div>
+            <div class="nav-links">
+    <span onclick="toggleCloak()" style="cursor:pointer; margin-right: 20px;">CLOAK [ESC]</span>
+    <span class="nav-status">DATABASE: <span id="entryCount">0</span> ENTRIES</span>
+            </div>
+        </nav>
+
+        <div class="search-container">
+            <input type="text" id="gameSearch" placeholder="SEARCH DATABASE..." autocomplete="off">
+            <div class="search-line"></div>
+        </div>
+
+        <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/football-bros.html'">
+                        <img src="https://files.catbox.moe/bb71q0.png" alt="Football Bros">
+                        <div class="game-name">Football Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/baseball-bros.html'">
+                        <img src="https://files.catbox.moe/xu8fej.jpg" alt="Baseball Bros">
+                        <div class="game-name">Baseball Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/basket-bros.html'">
+                        <img src="/g/assets/basketbros.png" alt="Basket Bros">
+                        <div class="game-name">Basket Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/soccer-bros.html'">
+                        <img src="https://files.catbox.moe/pe24fi.jpg" alt="Soccer Bros">
+                        <div class="game-name">Soccer Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/wrestle-bros.html'">
+                        <img src="https://files.catbox.moe/h1z2o1.png" alt="Wrestle Bros">
+                        <div class="game-name">Wrestle Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/karate-bros.html'">
+                        <img src="https://files.catbox.moe/eracxl.png" alt="Karate Bros">
+                        <div class="game-name">Karate Bros</div>
+                    </div>
+                </div>
+
+                <div class="rectangle-container">
+                    <div class="rectangle" data-category="pc" onclick="window.location.href='/g/kart-bros.html'">
+                        <img src="https://files.catbox.moe/196rdv.webp" alt="Kart Bros">
+                        <div class="game-name">Kart Bros</div>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    const searchInput = document.getElementById('gameSearch');
+    const gameCards = document.getElementsByClassName('rectangle-container');
+    const entryCount = document.getElementById('entryCount');
+
+    // Function to update the counter
+    function updateCounter() {
+        let visibleCount = 0;
+        for (let i = 0; i < gameCards.length; i++) {
+            if (gameCards[i].style.display !== "none") {
+                visibleCount++;
+            }
+        }
+        entryCount.innerText = visibleCount;
+    }
+
+    // Live Search Filter Logic
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        
+        for (let i = 0; i < gameCards.length; i++) {
+            const gameName = gameCards[i].querySelector('.game-name').innerText.toLowerCase();
+            if (gameName.includes(filter)) {
+                gameCards[i].style.display = "";
+            } else {
+                gameCards[i].style.display = "none";
+            }
+        }
+        updateCounter(); // Update count after filtering
+    });
+
+    // Initial count on page load
+    window.addEventListener('DOMContentLoaded', updateCounter);
+</script>
+    <script>
+    function forceMoonlightRouting() {
+        const gameDivs = document.querySelectorAll('.rectangle');
+        
+        gameDivs.forEach(div => {
+            const originalAction = div.getAttribute('onclick');
+            
+            if (originalAction && originalAction.includes('/g/')) {
+                // 1. Extract the URL from the onclick string
+                const match = originalAction.match(/'([^']+)'/);
+                if (match && match[1]) {
+                    const gamePath = match[1];
+                    
+                    // 2. Clear the original onclick entirely
+                    div.removeAttribute('onclick');
+                    div.setAttribute('onclick', ''); 
+                    
+                    // 3. Set a new Moonlight-specific click event
+                    div.onclick = function(e) {
+                        e.preventDefault();
+                        // Clean the path and redirect
+                        const cleanPath = gamePath.startsWith('/') ? gamePath.substring(1) : gamePath;
+                        window.location.href = `player.html?game=${cleanPath}`;
+                    };
+                }
+            }
+        });
+    }
+
+    // Run on load
+    window.addEventListener('load', forceMoonlightRouting);
+    // Run whenever the user types in search (in case new divs appear)
+    document.getElementById('gameSearch').addEventListener('keyup', forceMoonlightRouting);
+</script>
+    <script>
+    (function() {
+        // Detect if the page is being viewed outside of the about:blank iframe
+        if (window.self === window.top) {
+            // Immediately replace the page content with the error UI
+            document.documentElement.innerHTML = `
+                <head>
+                    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&display=swap" rel="stylesheet">
+                </head>
+                <body style="background:#050505; color:#ff3333; font-family:'Syncopate', sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; margin:0; overflow:hidden;">
+                    <div style="border: 1px solid #ff3333; padding: 40px; background: rgba(255,0,0,0.05); text-align:center;">
+                        <h1 style="letter-spacing:12px; font-size: 18px; margin:0;">SECURE_TUNNEL_BREACHED</h1>
+                        <div style="width: 100%; height: 1px; background: #ff3333; margin: 20px 0; opacity: 0.3;"></div>
+                        <p style="color:#666; font-size:9px; letter-spacing:4px; margin:0;">CONNECTION_LEAK_DETECTED // REDIRECTING...</p>
+                    </div>
+                </body>
+            `;
+
+            // Wait 1.5 seconds so they see the error, then boot them to the gateway
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+    })();
+</script>
+</body>
+</html>
